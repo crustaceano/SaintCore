@@ -13,11 +13,27 @@ namespace SaintCore {
 		int cols, rows;
 		std::vector<std::vector<floatT>> data;
 	public:
+		Tensor(int rows, int cols);
+		
+		// сложение
 		friend Tensor operator+(Tensor const& a, Tensor const& b);
-		friend Tensor operator*(Tensor const& a, Tensor const& b);
+		// вычитание
 		friend Tensor operator-(Tensor const& a, Tensor const& b);
-		friend Tensor operator*(Tensor const& a, int b);
+		// умножение
+		friend Tensor operator*(Tensor const& a, Tensor const& b);
+		// умножение на число
+		friend Tensor operator*(Tensor const& a, float b);
+		// поэлементное умножение
 		friend Tensor operator%(Tensor const& a, Tensor const& b);
+
+		// доступ по индексу
+		std::vector<floatT> const& operator[](int ind) const;
+
+		// получить транспонированную
+		Tensor transposed() const;
+
+		int get_cols() const;
+		int get_rows() const;
 	};
 }
 
