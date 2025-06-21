@@ -56,6 +56,11 @@ std::vector<SaintCore::floatT> const& SaintCore::Tensor::operator[](int ind) con
 }
 
 
+std::vector<SaintCore::floatT>& SaintCore::Tensor::operator[](int ind) {
+	return data[ind];
+}
+
+
 SaintCore::Tensor SaintCore::Tensor::transposed() const{
 	Tensor c(cols, rows);
 	for (int i = 0; i < cols; i++)
