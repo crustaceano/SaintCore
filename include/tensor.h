@@ -6,6 +6,7 @@
 #define TENSOR_H
 
 #include <vector>
+#include <iostream>
 #include <include/types.h>
 
 namespace SaintCore {
@@ -29,6 +30,9 @@ namespace SaintCore {
 		// get by index
 		std::vector<floatT> const& operator[](int ind) const;
 		std::vector<floatT>& operator[](int ind);
+
+		//cout
+		friend std::ostream& operator<<(std::ostream& out, Tensor a);
 
 		// get transposed
 		Tensor transposed() const;
