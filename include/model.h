@@ -14,15 +14,18 @@ namespace SaintCore {
         public:
             virtual ~BaseModel() = default;
 
-            virtual Tensor forward(const Tensor& input) = 0;
+            virtual Tensor forward(const Tensor &input) = 0;
 
             // Переключение режима обучения/инференса
-            void train() { this->training_ = true;}
-            void eval() { this->training_ = false;}
+            void train() { this->training_ = true; }
+            void eval() { this->training_ = false; }
 
             // Методы сериализации модели (по желанию)
-            virtual void save(const std::string& path) const {}
-            virtual void load(const std::string& path) {}
+            virtual void save(const std::string &path) const {
+            }
+
+            virtual void load(const std::string &path) {
+            }
 
         protected:
             bool training_ = true;
@@ -30,12 +33,16 @@ namespace SaintCore {
 
         class LinearModel : public BaseModel {
         public:
-            explicit LinearModel(int in_channels, int out_channels) {
-
+            explicit LinearModel(int in_channels, int out_channels)
+                : in_channels(in_channels),
+                  out_channels(out_channels),
+                  weights(in_channels, out_channels) {
             }
+
             ~LinearModel() override;
 
-            Tensor forward(const Tensor& input) override;
+            Tensor forward(const Tensor &input) override;
+
         private:
             int in_channels;
             int out_channels;
