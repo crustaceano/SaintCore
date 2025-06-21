@@ -15,21 +15,41 @@ namespace SaintCore {
 	public:
 		Tensor(int rows, int cols);
 		
-		// сложение
+<<<<<<< HEAD
+		// sum
 		friend Tensor operator+(Tensor const& a, Tensor const& b);
-		// вычитание
+		// substract
 		friend Tensor operator-(Tensor const& a, Tensor const& b);
-		// умножение
+		// multiply
 		friend Tensor operator*(Tensor const& a, Tensor const& b);
-		// умножение на число
+		// mul by float
 		friend Tensor operator*(Tensor const& a, float b);
-		// поэлементное умножение
+		// elements multiply
 		friend Tensor operator%(Tensor const& a, Tensor const& b);
 
-		// доступ по индексу
+		// get by index
 		std::vector<floatT> const& operator[](int ind) const;
+		std::vector<floatT>& operator[](int ind);
 
-		// получить транспонированную
+		// get transposed
+=======
+		// ????????
+		friend Tensor operator+(Tensor const& a, Tensor const& b);
+		// ?????????
+		friend Tensor operator-(Tensor const& a, Tensor const& b);
+		// ?????????
+		friend Tensor operator*(Tensor const& a, Tensor const& b);
+		// ????????? ?? ?????
+		friend Tensor operator*(Tensor const& a, float b);
+		// ???????????? ?????????
+		friend Tensor operator%(Tensor const& a, Tensor const& b);
+
+		// ?????? ?? ???????
+		std::vector<floatT> const& operator[](int ind) const;
+		std::vector<floatT>& operator[](int ind);
+
+		// ???????? ?????????????????
+>>>>>>> 576ca1ba1d447d0b37be6d5183f0c21506915748
 		Tensor transposed() const;
 
 		int get_cols() const;

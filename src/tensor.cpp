@@ -1,7 +1,16 @@
 #include <include/tensor.h>
 #include <include/exceptions.h>
+#include <ctime>
+
+float randomFloat() {
+	return (float)(rand()) / (float)(RAND_MAX);
+}
+
 
 SaintCore::Tensor::Tensor(int rows, int cols) : cols(cols), rows(rows) {
+	for (int i = 0; i < cols; i++)
+		for (int j = 0; j < rows; j++)
+			data[i][j] = randomFloat();
 }
 
 
@@ -52,6 +61,11 @@ SaintCore::Tensor SaintCore::operator%(Tensor const& a, Tensor const& b) {
 
 
 std::vector<SaintCore::floatT> const& SaintCore::Tensor::operator[](int ind) const {
+	return data[ind];
+}
+
+
+std::vector<SaintCore::floatT>& SaintCore::Tensor::operator[](int ind) {
 	return data[ind];
 }
 

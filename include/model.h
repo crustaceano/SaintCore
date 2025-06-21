@@ -9,23 +9,46 @@
 #include <string>
 
 namespace SaintCore {
-    class BaseModel {
-    public:
-        virtual ~BaseModel() = default;
+    namespace Models {
+        class BaseModel {
+        public:
+            virtual ~BaseModel() = default;
 
-        virtual Tensor forward(const Tensor& input) = 0;
+            virtual Tensor forward(const Tensor &input) = 0;
 
-        // Переключение режима обучения/инференса
-        bool train() const { return training_;}
-        bool eval() const { return !training_;}
+            // Переключение режима обучения/инференса
+            void train() { this->training_ = true; }
+            void eval() { this->training_ = false; }
 
-        // Методы сериализации модели (по желанию)
-        virtual void save(const std::string& path) const {}
-        virtual void load(const std::string& path) {}
+            // Методы сериализации модели (по желанию)
+            virtual void save(const std::string &path) const {
+            }
 
-    protected:
-        bool training_ = true;
-    };
+            virtual void load(const std::string &path) {
+            }
+
+        protected:
+            bool training_ = true;
+        };
+
+        class LinearModel : public BaseModel {
+        public:
+            explicit LinearModel(int in_channels, int out_channels)
+                : in_channels(in_channels),
+                  out_channels(out_channels),
+                  weights(in_channels, out_channels) {
+            }
+
+            ~LinearModel() override;
+
+            Tensor forward(const Tensor &input) override;
+
+        private:
+            int in_channels;
+            int out_channels;
+            Tensor weights;
+        };
+    }
 }
 
 #endif //MODEL_H

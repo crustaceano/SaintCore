@@ -2,7 +2,7 @@
 #define TYPES_H
 
 namespace SaintCore {
-	typedef floatT float;
+	typedef float floatT;
 }
 
 #endif // TYPES_H
