@@ -14,4 +14,4 @@ add_executable(SaintCore
     src/model.cpp
     src/tensor.cpp
     ZOV.h
-    Ве_крест_крест.h)
+    Ве_крест_крест.h "main.cpp")
