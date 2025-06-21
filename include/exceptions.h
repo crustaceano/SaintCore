@@ -14,6 +14,12 @@ namespace SaintCore {
             return msg.c_str();
         }
     };
+
+    class SizeMismatchException : public BaseException {
+    public:
+        explicit SizeMismatchException(const std::string& message)
+            : BaseException(message) {}
+    };
 }
 
 #endif // EXCEPTIONS_H
