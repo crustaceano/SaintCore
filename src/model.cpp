@@ -1,9 +1,7 @@
 #include <include/model.h>
 #include <include/exceptions.h>
 
-SaintCore::Models::LinearModel::~LinearModel() {
-    return;
-}
+SaintCore::Models::LinearModel::~LinearModel() = default;
 
 SaintCore::Tensor SaintCore::Models::LinearModel::forward(const Tensor &input) {
     // input_dim - (1, in_channels)

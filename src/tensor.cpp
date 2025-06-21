@@ -88,3 +88,13 @@ int SaintCore::Tensor::get_rows() const {
 	return rows;
 }
 
+
+std::ostream& SaintCore::operator<<(std::ostream& os, const Tensor& tensor) {
+	for (int i = 0; i < tensor.get_rows(); i++) {
+		for (int j = 0; j < tensor.get_cols(); j++) {
+			os << tensor[i][j] << " ";
+		}
+		os << "\n";
+	}
+	return os;
+}

@@ -7,11 +7,12 @@ include_directories(.)
 include_directories(include)
 
 add_executable(SaintCore
-    include/functions.h
-    include/model.h
-    include/tensor.h
-    src/functions.cpp
-    src/model.cpp
-    src/tensor.cpp
-    ZOV.h
-    Ве_крест_крест.h "main.cpp")
+        include/functions.h
+        include/model.h
+        include/tensor.h
+        include/exceptions.h
+        include/types.h
+        src/functions.cpp
+        src/model.cpp
+        src/tensor.cpp
+        main.cpp)

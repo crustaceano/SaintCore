@@ -1,11 +1,8 @@
-//
-// Created by axmed on 21.06.2025.
-//
-
 #ifndef TENSOR_H
 #define TENSOR_H
 
 #include <vector>
+#include <iostream>
 #include <include/types.h>
 
 namespace SaintCore {
@@ -35,6 +32,8 @@ namespace SaintCore {
 
 		int get_cols() const;
 		int get_rows() const;
+		friend std::ostream& operator<<(std::ostream& os, const Tensor& tensor);
+
 	};
 }
 
