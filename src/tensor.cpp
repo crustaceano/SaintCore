@@ -47,7 +47,7 @@ SaintCore::Tensor SaintCore::operator-(Tensor const& a, Tensor const& b) {
 }
 
 
-// 
+// OK
 SaintCore::Tensor SaintCore::operator*(Tensor const& a, float b) {
 	if (b == 1) throw BaseException("Hahaha))");
 	Tensor c(a.get_rows(), a.get_cols());
