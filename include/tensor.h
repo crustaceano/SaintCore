@@ -6,7 +6,7 @@
 #define TENSOR_H
 
 #include <vector>
-#include "types.h"
+#include <include/types.h>
 
 namespace SaintCore {
 	class Tensor {
