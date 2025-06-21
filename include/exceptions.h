@@ -2,6 +2,7 @@
 #define EXCEPTIONS_H
 
 #include <exception>
+#include <string>
 
 namespace SaintCore {
     class BaseException : public std::exception {

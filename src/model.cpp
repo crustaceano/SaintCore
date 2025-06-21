@@ -1,6 +1,6 @@
 #include <include/model.h>
 
 
-class BaseModel {
-
-};
+SaintCore::Models::LinearModel::LinearModel() {
+    // Инициализация параметров модели, например, весов
+}
