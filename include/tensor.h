@@ -27,9 +27,6 @@ namespace SaintCore {
 		std::vector<floatT> const& operator[](int ind) const;
 		std::vector<floatT>& operator[](int ind);
 
-		//cout
-		friend std::ostream& operator<<(std::ostream& out, Tensor a);
-
 		// get transposed
 		Tensor transposed() const;
 

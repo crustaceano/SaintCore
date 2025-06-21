@@ -78,18 +78,6 @@ std::vector<SaintCore::floatT>& SaintCore::Tensor::operator[](int ind) {
 	return data[ind];
 }
 
-
-// OK
-std::ostream& SaintCore::operator<<(std::ostream& out, Tensor a) {
-	for (int i = 0; i < a.get_rows(); i++) {
-		for (int j = 0; j < a.get_cols(); j++)
-			out << a[i][j] << " ";
-		out << std::endl;
-	}
-	return out;
-}
-
-
 // OK
 SaintCore::Tensor SaintCore::Tensor::transposed() const {
 	Tensor c(cols, rows);
