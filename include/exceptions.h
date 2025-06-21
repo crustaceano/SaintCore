@@ -7,18 +7,28 @@
 namespace SaintCore {
     class BaseException : public std::exception {
         std::string msg;
-    public:
-        explicit BaseException(const std::string& message) : msg(message) {}
 
-        const char* what() const noexcept override {
+    public:
+        explicit BaseException(const std::string &message) : msg(message) {
+        }
+
+        const char *what() const noexcept override {
             return msg.c_str();
         }
     };
 
     class SizeMismatchException : public BaseException {
     public:
-        explicit SizeMismatchException(const std::string& message)
-            : BaseException(message) {}
+        explicit SizeMismatchException(const std::string &message)
+            : BaseException(message) {
+        }
+    };
+
+    class InvalidArgumentException : public BaseException {
+    public:
+        explicit InvalidArgumentException(const std::string &message)
+            : BaseException(message) {
+        }
     };
 }
 
