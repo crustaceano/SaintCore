@@ -28,6 +28,7 @@ namespace SaintCore {
 
 		// доступ по индексу
 		std::vector<floatT> const& operator[](int ind) const;
+		std::vector<floatT>& operator[](int ind);
 
 		// получить транспонированную
 		Tensor transposed() const;
