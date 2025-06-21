@@ -1,3 +1,6 @@
-//
-// Created by axmed on 21.06.2025.
-//
+#include <include/model.h>
+
+
+class BaseModel {
+
+};
