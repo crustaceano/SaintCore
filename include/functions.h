@@ -11,6 +11,8 @@ namespace SaintCore {
         Tensor softmax(const Tensor& input);
         Tensor relu(const Tensor& output);
         Tensor cross_entropy(const Tensor& input, const Tensor& target);
+        Tensor exp(const Tensor& input);
+        Tensor sum(const Tensor& input, int axis = -1);
     }
 }
 
