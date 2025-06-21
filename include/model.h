@@ -36,7 +36,8 @@ namespace SaintCore {
             explicit LinearModel(int in_channels, int out_channels)
                 : in_channels(in_channels),
                   out_channels(out_channels),
-                  weights(in_channels, out_channels) {
+                  weights(in_channels, out_channels),
+                  bias(1, out_channels) {
             }
 
             ~LinearModel() override;
@@ -47,6 +48,7 @@ namespace SaintCore {
             int in_channels;
             int out_channels;
             Tensor weights;
+            Tensor bias;
         };
     }
 }
