@@ -5,4 +5,8 @@
 #ifndef MODEL_H
 #define MODEL_H
 
+namespace SaintCore {
+
+}
+
 #endif //MODEL_H

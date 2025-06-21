@@ -5,4 +5,8 @@
 #ifndef TENSOR_H
 #define TENSOR_H
 
+namespace SaintCore {
+
+}
+
 #endif //TENSOR_H

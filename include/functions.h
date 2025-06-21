@@ -2,7 +2,11 @@
 // Created by axmed on 21.06.2025.
 //
 
-#ifndef LOSS_H
-#define LOSS_H
+#ifndef FUNCTIONS_H
+#define FUNCTIONS_H
 
-#endif //LOSS_H
+namespace SaintCore {
+
+}
+
+#endif //FUNCTIONS_H
