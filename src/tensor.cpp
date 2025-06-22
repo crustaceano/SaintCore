@@ -9,7 +9,7 @@ float randomFloat() {
 }
 
 
-const SaintCore::floatT SaintCore::Tensor::eps = 1e-3;
+const SaintCore::floatT SaintCore::Tensor::eps = 1e-6;
 
 
 SaintCore::Tensor::Tensor(int rows, int cols) : cols(cols), rows(rows) {
@@ -106,15 +106,15 @@ SaintCore::floatT & SaintCore::Tensor::at(int ind1, int ind2) {
 }
 
 
-// std::vector<SaintCore::floatT> const& SaintCore::Tensor::operator[](int ind) const {
-// 	return data[ind];
-// }
-//
-//
-// std::vector<SaintCore::floatT>& SaintCore::Tensor::operator[](int ind) {
-// 	if (ind < 0 || ind >= rows) throw BaseException("Index out of range");
-// 	return data[ind];
-// }
+std::vector<SaintCore::floatT> const& SaintCore::Tensor::operator[](int ind) const {
+	return data[ind];
+}
+
+
+std::vector<SaintCore::floatT>& SaintCore::Tensor::operator[](int ind) {
+	if (ind < 0 || ind >= rows) throw BaseException("Index out of range");
+	return data[ind];
+}
 
 
 bool SaintCore::operator==(Tensor const& a, Tensor const& b) {
@@ -124,6 +124,11 @@ bool SaintCore::operator==(Tensor const& a, Tensor const& b) {
 			if (abs(a.at(i, j) - b.at(i, j)) > SaintCore::Tensor::eps)
 				return false;
 	return true;
+}
+
+
+bool SaintCore::operator!=(Tensor const& a, Tensor const& b) {
+	return !(a == b);
 }
 
 
