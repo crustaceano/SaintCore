@@ -12,6 +12,7 @@ namespace SaintCore {
         class BaseModel {
         public:
             virtual ~BaseModel() = default;
+
             virtual Tensor forward(const std::vector<Tensor> &input) = 0;
 
             // Переключение режима обучения/инференса
@@ -19,10 +20,15 @@ namespace SaintCore {
             void eval() { this->training_ = false; }
 
             virtual std::vector<Tensor *> get_parameters() const = 0;
+
             virtual void update_parameters(std::vector<Tensor> &new_params) = 0;
+
             virtual Tensor getGrad(const std::vector<Tensor> &input) const = 0;
-            virtual std::vector<Tensor> getTrainParams_grad(const Tensor& input) const = 0;
-            // virtual Tensor propagateGrad(Tensor &grad) = 0;
+
+            virtual std::vector<Tensor> getTrainParams_grad(const Tensor &input) const = 0;
+
+            virtual Tensor propagateGrad(const std::vector<Tensor> &input, Tensor &grad) = 0;
+
         protected:
             bool training_ = true;
         };
@@ -40,10 +46,16 @@ namespace SaintCore {
 
             Tensor forward(const std::vector<Tensor> &input) override;
 
+            Tensor propagateGrad(const std::vector<Tensor> &input, Tensor &grad) override;
+
             std::vector<Tensor *> get_parameters() const override;
+
             void update_parameters(std::vector<Tensor> &new_params) override;
+
             Tensor getGrad(const std::vector<Tensor> &input) const override;
-            std::vector<Tensor> getTrainParams_grad(const Tensor& input) const override;
+
+            std::vector<Tensor> getTrainParams_grad(const Tensor &input) const override;
+
             // virtual Tensor propagateGrad(Tensor &grad) override;
 
             Tensor get_weights() const {
@@ -66,7 +78,7 @@ namespace SaintCore {
             explicit ReLU() = default;
 
             Tensor forward(const std::vector<Tensor> &inputs) override {
-                const Tensor& input = inputs[0];
+                const Tensor &input = inputs[0];
                 Tensor output(input.get_rows(), input.get_cols());
                 for (int i = 0; i < input.get_rows(); ++i) {
                     for (int j = 0; j < input.get_cols(); ++j) {
@@ -80,7 +92,8 @@ namespace SaintCore {
                 return {};
             }
 
-            void update_parameters(std::vector<Tensor> &new_params) override {}
+            void update_parameters(std::vector<Tensor> &new_params) override {
+            }
 
             Tensor getGrad(const std::vector<Tensor> &inputs) const override {
                 Tensor input = inputs[0];
@@ -93,8 +106,13 @@ namespace SaintCore {
                 return grad;
             }
 
+            Tensor propagateGrad(const std::vector<Tensor> &input, Tensor &grad) override {
+                Tensor cur_grads = getGrad(input);
+                
+            }
 
-            [[nodiscard]] std::vector<Tensor> getTrainParams_grad(const Tensor& input) const override {
+
+            [[nodiscard]] std::vector<Tensor> getTrainParams_grad(const Tensor &input) const override {
                 return {};
             }
         };
@@ -109,9 +127,9 @@ namespace SaintCore {
 
                 int batch_size = softmax_out.get_rows();
                 float loss = 0.0f;
-                for(int i = 0; i < batch_size; ++i) {
+                for (int i = 0; i < batch_size; ++i) {
                     int target_class = static_cast<int>(targets.at(0, i));
-                    float log_prob =  -std::log(softmax_out.at(i, target_class));
+                    float log_prob = -std::log(softmax_out.at(i, target_class));
                     loss += log_prob;
                 }
                 return Tensor({std::vector<floatT>{loss / batch_size}});
@@ -128,9 +146,10 @@ namespace SaintCore {
                 return {};
             }
 
-            void update_parameters(std::vector<Tensor> &new_params) override {}
+            void update_parameters(std::vector<Tensor> &new_params) override {
+            }
 
-            std::vector<Tensor> getTrainParams_grad(const Tensor& input) const override {
+            std::vector<Tensor> getTrainParams_grad(const Tensor &input) const override {
                 return {};
             }
         };
