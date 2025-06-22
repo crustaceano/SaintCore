@@ -1,6 +1,7 @@
 #include <include/tensor.h>
 #include <include/exceptions.h>
 #include <ctime>
+#include <vector>
 #include <iostream>
 
 float randomFloat() {
@@ -14,6 +15,22 @@ SaintCore::Tensor::Tensor(int rows, int cols) : cols(cols), rows(rows) {
 		for (int j = 0; j < cols; j++)
 			data[i][j] = randomFloat();
 }
+
+
+SaintCore::Tensor::Tensor(std::vector<std::vector<floatT>> const& vec) {
+	data = vec;
+	rows = vec.size();
+	if (rows == 0) {
+		cols = 0;
+		return;
+	}
+	cols = vec[0].size();
+	for (int i = 0; i < vec.size(); i++) {
+		if (vec[0].size() != vec[i].size())
+			throw BaseException("Different row size in matrix");
+	}
+}
+
 
 
 // OK
