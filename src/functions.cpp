@@ -15,13 +15,13 @@ SaintCore::Tensor SaintCore::Functions::exp(const Tensor &input) {
 
 SaintCore::Tensor SaintCore::Functions::sum(const Tensor &input, int axis) {
     if (axis == -1) {
-        Tensor output(1, input.get_rows());
+        Tensor output(input.get_rows(), 1);
         for (int i = 0; i < input.get_rows(); ++i) {
             floatT sum = 0;
             for (int j = 0; j < input.get_cols(); ++j) {
                 sum += input[i][j];
             }
-            output[0][i] = sum;
+            output[i][0] = sum;
         }
         return output;
     }
@@ -32,7 +32,7 @@ SaintCore::Tensor SaintCore::Functions::sum(const Tensor &input, int axis) {
             for (int i = 0; i < input.get_rows(); ++i) {
                 sum += input[i][j];
             }
-            output[j][0] = sum;
+            output[0][j] = sum;
         }
         return output;
     }
