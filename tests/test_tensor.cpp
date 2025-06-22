@@ -55,7 +55,17 @@ TEST(Tensor, Sum) {
         Tensor({{8, 10, 12}, {14, 16, 18}}));
     EXPECT_EQ(Tensor({{1, 2, 3}, {4, 5, 6}}) - Tensor({{7, 8, 9}, {10, 11, 12}}),
         Tensor({{-6, -6, -6}, {-6, -6, -6}}));
+    EXPECT_EQ(Tensor({{1, 2, 3}, {4, 5, 6}}) + Tensor({{7, 8, 9}}),
+        Tensor({{8, 10, 12}, {11, 13, 15}}));
+    EXPECT_EQ(Tensor({{1, 2, 3}, {4, 5, 6}}) - Tensor({{7, 8, 9}}),
+        Tensor({{-6, -6, -6}, {-3, -3, -3}}));
+    EXPECT_EQ(Tensor({{1, 2, 3}, {4, 5, 6}}) + Tensor({{7, 8}}).transposed(),
+        Tensor({{8, 9, 10}, {12, 13, 14}}));
+    EXPECT_EQ(Tensor({{1, 2, 3}, {4, 5, 6}}) - Tensor({{7, 8}}).transposed(),
+        Tensor({{-6, -5, -4}, {-4, -3, -2}}));
     EXPECT_THROW(Tensor({{1, 2}}) + Tensor({{3, 4, 5}}), BaseException);
+    EXPECT_THROW(Tensor({{1, 2, 3}, {4, 5, 6}}) + Tensor({{7, 8}, {9, 10}}).transposed(), BaseException);
+
 }
 
 
