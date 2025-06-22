@@ -35,8 +35,6 @@ TORCH_MODULE(MLP);
 
 int main() {
     // 1. Загрузка наборов данных
-    std::cout << "1" << std::endl;
-
     auto train_set = load_dataset("train-images.idx3-ubyte", "train-labels.idx1-ubyte");
     auto test_set  = load_dataset("t10k-images.idx3-ubyte",  "t10k-labels.idx1-ubyte");
 
@@ -46,8 +44,6 @@ int main() {
     }
 
     // 2. Конвертация std::vector<MNIST_Example> в torch::Tensor
-    std::cout << "2" << std::endl;
-
     const size_t train_size = train_set.size();
     const size_t test_size  = test_set.size();
 
@@ -88,13 +84,10 @@ int main() {
     }
 
     // 3. Создать модель и оптимизатор
-    std::cout << "3" << std::endl;
     MLP model;
-    std::cout << "3.5" << std::endl;
     torch::optim::SGD optimizer(model->parameters(), /*lr=*/0.01);
 
     // 4. Гиперпараметры
-    std::cout << "4" << std::endl;
     const size_t num_epochs = 3;      // для примера 3 эпохи
     const size_t batch_size = 64;
     const size_t num_batches = (train_size + batch_size - 1) / batch_size;
@@ -154,7 +147,6 @@ int main() {
                   << "Train Loss: " << avg_loss << ", Train Acc: " << accuracy << "%\n";
 
         // 5. Оценка на тесте
-        std::cout << "5" << std::endl;
         model->eval();
         torch::NoGradGuard no_grad;
         double test_loss = 0.0;
@@ -195,7 +187,6 @@ int main() {
     }
 
     // 6. Сохранение модели
-    std::cout << "6" << std::endl;
     std::string model_path = "mnist_mlp.pt";
     torch::save(model, model_path);
     std::cout << "Model saved to " << model_path << "\n";
