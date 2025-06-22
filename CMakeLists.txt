@@ -6,25 +6,46 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+# Указываем путь к LibTorch для CMake
+# Это позволит найти и Torch, и Caffe2 (которые лежат внутри libtorch)\
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/libtorch")
+
+
+# Ищем LibTorch
+find_package(Torch REQUIRED)
+
 # Включаем ваши директории с заголовками
 include_directories(.)
 include_directories(include)
 include_directories(include/perfect_visualization)
 
-# 🔧 Основной исполняемый файл
+# Основной исполняемый файл
 add_executable(SaintCore
         src/functions.cpp
         src/model.cpp
         src/tensor.cpp
         src/container.cpp
-        main_container.cpp
+        main.cpp
         visualization.cpp
         src/Image.cpp
         src/bmp_writer.cpp
         mnist_reader.cpp
 )
 
-# 🎯 GoogleTest
+# Линкуем LibTorch
+target_link_libraries(SaintCore PRIVATE ${TORCH_LIBRARIES})
+
+# Для Windows: копируем DLL из libtorch/bin рядом с .exe
+if (WIN32)
+    file(GLOB TORCH_DLLS "${CMAKE_SOURCE_DIR}/libtorch/lib/*.dll")
+    add_custom_command(TARGET SaintCore POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${TORCH_DLLS}
+            $<TARGET_FILE_DIR:SaintCore>
+    )
+endif()
+
+# GoogleTest
 include(FetchContent)
 FetchContent_Declare(
         googletest
