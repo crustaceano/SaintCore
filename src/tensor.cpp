@@ -103,7 +103,7 @@ bool SaintCore::operator==(Tensor const& a, Tensor const& b) {
 	if (a.rows != b.rows || a.cols != b.cols) return false;
 	for (int i = 0; i < a.rows; i++)
 		for (int j = 0; j < a.cols; j++)
-			if (abs(a[i][j] - b[i][j]) < SaintCore::Tensor::eps)
+			if (abs(a[i][j] - b[i][j]) > SaintCore::Tensor::eps)
 				return false;
 	return true;
 }
