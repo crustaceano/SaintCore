@@ -95,6 +95,7 @@ std::vector<SaintCore::floatT> const& SaintCore::Tensor::operator[](int ind) con
 
 
 std::vector<SaintCore::floatT>& SaintCore::Tensor::operator[](int ind) {
+	if (ind < 0 || ind >= rows) throw BaseException("Index out of range");
 	return data[ind];
 }
 
