@@ -13,24 +13,16 @@ namespace SaintCore {
         class BaseModel {
         public:
             virtual ~BaseModel() = default;
-
             virtual Tensor forward(const Tensor &input) = 0;
 
             // Переключение режима обучения/инференса
             void train() { this->training_ = true; }
             void eval() { this->training_ = false; }
 
-            // Методы сериализации модели (по желанию)
-            virtual void save(const std::string &path) const;
-
             virtual std::vector<Tensor *> get_parameters() const = 0;
-
+            virtual void update_parameters(std::vector<Tensor> &new_params) = 0;
             virtual Tensor getGrad(const Tensor &input) const = 0;
-
-            virtual std::vector<Tensor> getTrainParams_grad() const = 0;
-
-            virtual void load(const std::string &path);
-
+            virtual std::vector<Tensor> getTrainParams_grad(const Tensor& input) const = 0;
         protected:
             bool training_ = true;
         };
@@ -49,8 +41,9 @@ namespace SaintCore {
             Tensor forward(const Tensor &input) override;
 
             std::vector<Tensor *> get_parameters() const override;
+            void update_parameters(std::vector<Tensor> &new_params) override;
             Tensor getGrad(const Tensor &input) const override;
-            std::vector<Tensor> getTrainParams_grad() const override;
+            std::vector<Tensor> getTrainParams_grad(const Tensor& input) const override;
 
             Tensor get_weights() const {
                 return weights;
