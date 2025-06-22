@@ -4,8 +4,14 @@
 #include <vector>
 #include <iostream>
 
-float randomFloat() {
-	return (float)(rand()) / (float)(RAND_MAX);
+SaintCore::floatT randomFloat() {
+	return static_cast<SaintCore::floatT>(rand()) / static_cast<SaintCore::floatT>(RAND_MAX);
+}
+
+
+SaintCore::floatT my_abs(SaintCore::floatT a) {
+	if (a >= 0) return a;
+	return -a;
 }
 
 
@@ -121,9 +127,7 @@ bool SaintCore::operator==(Tensor const& a, Tensor const& b) {
 	if (a.rows != b.rows || a.cols != b.cols) return false;
 	for (int i = 0; i < a.rows; i++)
 		for (int j = 0; j < a.cols; j++) {
-			float x = abs(a.at(i, j) - b.at(i, j));
-			float y;
-			if (abs(a.at(i, j) - b.at(i, j)) > SaintCore::Tensor::eps)
+			if (my_abs(a.at(i, j) - b.at(i, j)) > SaintCore::Tensor::eps)
 				return false;
 		}
 	return true;
