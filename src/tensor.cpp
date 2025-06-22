@@ -9,7 +9,7 @@ float randomFloat() {
 }
 
 
-const SaintCore::floatT SaintCore::Tensor::eps = 1e-3;
+const SaintCore::floatT SaintCore::Tensor::eps = 1e-6;
 
 
 SaintCore::Tensor::Tensor(int rows, int cols) : cols(cols), rows(rows) {
