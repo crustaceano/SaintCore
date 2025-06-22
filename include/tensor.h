@@ -9,8 +9,8 @@ namespace SaintCore {
 	class Tensor {
 		int cols, rows;
 		std::vector<std::vector<floatT>> data;
-	public:
 		static const floatT eps;
+	public:
 		Tensor(int rows, int cols);
 		Tensor(std::vector<std::vector<floatT>> const & vec);
 		

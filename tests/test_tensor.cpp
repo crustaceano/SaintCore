@@ -37,13 +37,23 @@ TEST(Tensor, Index) {
 
 TEST(Tensor, Equal) {
     using namespace SaintCore;
-    floatT eps = 5e-1;
+    floatT eps = 5e-6;
     floatT s1 = 1 + eps, s2 = 2 + eps, s3 = 3 + eps, s4 = 4 + eps, s5 = 5 + eps, s6 = 6 + eps;
-    std::cout << Tensor::eps << std::endl;
     EXPECT_NE(Tensor({ {1, 2, 3}, {4, 5, 6} }), Tensor({ {s1, s2, s3}, {s4, s5, s6} }));
-    // EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} }), );
-    // EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} }), );
-    // EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} }), );
-    // EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} }), );
-    // EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} }), );
+    eps = 5e-7;
+    s1 = 1 + eps, s2 = 2 + eps, s3 = 3 + eps, s4 = 4 + eps, s5 = 5 + eps, s6 = 6 + eps;
+    EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} }), Tensor({ {s1, s2, s3}, {s4, s5, s6} }));
+    EXPECT_NE(Tensor({ {1, 2, 3}, {4, 5, 6} }), Tensor({{1, 2, 3}}));
+}
+
+
+TEST(Tensor, Sum) {
+    using namespace SaintCore;
+    floatT eps = 5e-6;
+    floatT s1 = 1 + eps, s2 = 2 + eps, s3 = 3 + eps, s4 = 4 + eps, s5 = 5 + eps, s6 = 6 + eps;
+    EXPECT_NE(Tensor({ {1, 2, 3}, {4, 5, 6} }), Tensor({ {s1, s2, s3}, {s4, s5, s6} }));
+    eps = 5e-7;
+    s1 = 1 + eps, s2 = 2 + eps, s3 = 3 + eps, s4 = 4 + eps, s5 = 5 + eps, s6 = 6 + eps;
+    EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} }), Tensor({ {s1, s2, s3}, {s4, s5, s6} }));
+    EXPECT_NE(Tensor({ {1, 2, 3}, {4, 5, 6} }), Tensor({{1, 2, 3}}));
 }
