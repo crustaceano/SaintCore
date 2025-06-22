@@ -8,9 +8,9 @@ SaintCore::Tensor SaintCore::Models::LinearModel::forward(const Tensor &input) {
     // weights - (in_channels, out_channels)
     // bias - (1, out_channels)
     // output_dim - (1, out_channels)
-    if (input.get_rows() != 1 || input.get_cols() != in_channels) {
+    if (input.get_cols() != in_channels) {
         throw SizeMismatchException(
-            "LinearModel_forward: Input dimension in mismatch: expected (1, " + std::to_string(in_channels) + "), got ("
+            "LinearModel_forward: Input dimension in mismatch: expected (batch_size " + std::to_string(in_channels) + "), got ("
             + std::to_string(input.get_rows()) + ", " + std::to_string(input.get_cols()) + ")");
     }
     return input * weights + bias;

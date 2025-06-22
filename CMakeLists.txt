@@ -28,6 +28,7 @@ add_executable(
         src/tensor.cpp
         tests/test_functions.cpp
         tests/test_tensor.cpp
+        tests/test_model.cpp
 )
 
 target_include_directories(SaintCoreTests PRIVATE include)
