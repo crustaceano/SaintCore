@@ -1,4 +1,5 @@
-//
+#include <ATen/core/interned_strings.h>
+x//
 // Created by axmed on 21.06.2025.
 //
 
@@ -77,13 +78,13 @@ namespace SaintCore {
                 return output;
             }
 
-            std::vector<Tensor *> get_parameters() const override {
+            [[nodiscard]] std::vector<Tensor *> get_parameters() const override {
                 return {};
             }
 
             void update_parameters(std::vector<Tensor> &new_params) override {}
 
-            Tensor getGrad(const Tensor &input) const override {
+            [[nodiscard]] Tensor getGrad(const Tensor &input) const override {
                 Tensor grad(input.get_rows(), input.get_cols());
                 for (int i = 0; i < input.get_rows(); ++i) {
                     for (int j = 0; j < input.get_cols(); ++j) {
@@ -93,61 +94,44 @@ namespace SaintCore {
                 return grad;
             }
 
+            [[nodiscard]] std::vector<Tensor> getTrainParams_grad(const Tensor& input) const override {
+                return {};
+            }
+        };
+
+        class CrossEntropyLoss : public BaseModel {
+        public:
+            CrossEntropyLoss() = default;
+
+            Tensor forward(const Tensor &input, const Tensor& targets) {
+                Tensor softmax_out = Functions::softmax(input);
+
+                int batch_size = softmax_out.get_rows();
+                float loss = 0.0f;
+                for(int i = 0; i < batch_size; ++i) {
+                    int target_class = static_cast<int>(targets.at(i, 0));
+                    float log_prob =  -std::log(softmax_out.at(i, target_class));
+                    loss += log_prob;
+                }
+                return Tensor({std::vector<floatT>{loss / batch_size}});
+            }
+
+            // ∂L/∂z = softmax(z) - one_hot(y)
+            Tensor getGrad(const Tensor &input, const Tensor& targets) const {
+                Tensor softmax_out = Functions::softmax(input);
+                return softmax_out - Functions::one_hot(targets, input.get_cols());
+            }
+
+            std::vector<Tensor *> get_parameters() const override {
+                return {};
+            }
+
+            void update_parameters(std::vector<Tensor> &new_params) override {}
+
             std::vector<Tensor> getTrainParams_grad(const Tensor& input) const override {
                 return {};
             }
         };
-        //
-        // class CrossEntropyLoss : public BaseModel {
-        // public:
-        //     CrossEntropyLoss() = default;
-        //
-        //     Tensor forward(const Tensor &input, const Tensor& ) override {
-        //         logits_ = input;
-        //
-        //         // Softmax
-        //         Tensor softmax_out = Functions::softmax(input);
-        //         softmax_ = softmax_out;
-        //         int batch_size = softmax_out.get_rows();
-        //
-        //
-        //         for(int i = 0; i < batch_size; ++i) {
-        //
-        //         }
-        //         int target_class = static_cast<int>(target_.at(0, 0));
-        //         float log_prob = std::log(softmax_out.at(0, target_class) + 1e-9f);  // защита от log(0)
-        //
-        //         return Tensor(1, 1, -log_prob);  // scalar loss
-        //     }
-        //
-        //     // Устанавливаем целевую метку
-        //     void set_target(const Tensor &target) {
-        //         target_ = target;
-        //     }
-        //
-        //     // ∂L/∂z = softmax(z) - one_hot(y)
-        //     Tensor getGrad(const Tensor &input) const override {
-        //         Tensor grad = softmax_;  // copy
-        //         int target_class = static_cast<int>(target_.at(0, 0));
-        //         grad.at(0, target_class) -= 1.0f;
-        //         return grad;
-        //     }
-        //
-        //     std::vector<Tensor *> get_parameters() const override {
-        //         return {};
-        //     }
-        //
-        //     void update_parameters(std::vector<Tensor> &new_params) override {}
-        //
-        //     std::vector<Tensor> getTrainParams_grad(const Tensor& input) const override {
-        //         return {};
-        //     }
-        //
-        // private:
-        //     Tensor logits_;
-        //     Tensor target_;
-        //     Tensor softmax_;
-        // };
     }
 }
 

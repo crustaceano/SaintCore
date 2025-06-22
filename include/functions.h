@@ -13,6 +13,7 @@ namespace SaintCore {
         Tensor cross_entropy(const Tensor& input, const Tensor& target);
         Tensor exp(const Tensor& input);
         Tensor sum(const Tensor& input, int axis = -1);
+        Tensor one_hot(const Tensor& input, int num_classes);
     }
 }
 

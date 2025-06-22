@@ -54,3 +54,16 @@ SaintCore::Tensor SaintCore::Functions::softmax(const Tensor &input) {
 
     return result;
 }
+
+SaintCore::Tensor SaintCore::Functions::one_hot(const Tensor &input, int num_classes) {
+    Tensor output(input.get_rows(), num_classes);
+    for (int i = 0; i < input.get_rows(); ++i) {
+        if (input[i][0] < 0 || input[i][0] >= num_classes) {
+            throw InvalidArgumentException("Input value out of range for one-hot encoding.");
+        }
+        for (int j = 0; j < num_classes; ++j) {
+            output[i][j] = (j == static_cast<int>(input[i][0])) ? 1.0f : 0.0f;
+        }
+    }
+    return output;
+}
