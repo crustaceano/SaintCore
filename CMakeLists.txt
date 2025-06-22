@@ -6,14 +6,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-# 🔧 Указываем путь к LibTorch для CMake
-# Это позволит найти и Torch, и Caffe2 (которые лежат внутри libtorch)\
-list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/libtorch")
-
-
-# 🔍 Ищем LibTorch
-find_package(Torch REQUIRED)
-
 # Включаем ваши директории с заголовками
 include_directories(.)
 include_directories(include)
@@ -32,19 +24,6 @@ add_executable(SaintCore
         mnist_reader.cpp
 )
 
-# Линкуем LibTorch
-target_link_libraries(SaintCore PRIVATE ${TORCH_LIBRARIES})
-
-# Для Windows: копируем DLL из libtorch/bin рядом с .exe
-if (WIN32)
-    file(GLOB TORCH_DLLS "${CMAKE_SOURCE_DIR}/libtorch/lib/*.dll")
-    add_custom_command(TARGET SaintCore POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${TORCH_DLLS}
-            $<TARGET_FILE_DIR:SaintCore>
-    )
-endif()
-
 # 🎯 GoogleTest
 include(FetchContent)
 FetchContent_Declare(
@@ -58,9 +37,11 @@ add_executable(SaintCoreTests
         src/functions.cpp
         src/model.cpp
         src/tensor.cpp
+        src/container.cpp
         tests/test_functions.cpp
         tests/test_tensor.cpp
         tests/test_model.cpp
+        tests/test_arab_conbtainer.cpp
 )
 target_include_directories(SaintCoreTests PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_link_libraries(SaintCoreTests PRIVATE gtest_main)

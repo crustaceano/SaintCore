@@ -97,57 +97,57 @@ namespace SaintCore {
                 return {};
             }
         };
-
-        class CrossEntropyLoss : public BaseModel {
-        public:
-            CrossEntropyLoss() = default;
-
-            Tensor forward(const Tensor &input, const Tensor& ) override {
-                logits_ = input;
-
-                // Softmax
-                Tensor softmax_out = Functions::softmax(input);
-                softmax_ = softmax_out;
-                int batch_size = softmax_out.get_rows();
-
-
-                for(int i = 0; i < batch_size; ++i) {
-
-                }
-                int target_class = static_cast<int>(target_.at(0, 0));
-                float log_prob = std::log(softmax_out.at(0, target_class) + 1e-9f);  // защита от log(0)
-
-                return Tensor(1, 1, -log_prob);  // scalar loss
-            }
-
-            // Устанавливаем целевую метку
-            void set_target(const Tensor &target) {
-                target_ = target;
-            }
-
-            // ∂L/∂z = softmax(z) - one_hot(y)
-            Tensor getGrad(const Tensor &input) const override {
-                Tensor grad = softmax_;  // copy
-                int target_class = static_cast<int>(target_.at(0, 0));
-                grad.at(0, target_class) -= 1.0f;
-                return grad;
-            }
-
-            std::vector<Tensor *> get_parameters() const override {
-                return {};
-            }
-
-            void update_parameters(std::vector<Tensor> &new_params) override {}
-
-            std::vector<Tensor> getTrainParams_grad(const Tensor& input) const override {
-                return {};
-            }
-
-        private:
-            Tensor logits_;
-            Tensor target_;
-            Tensor softmax_;
-        };
+        //
+        // class CrossEntropyLoss : public BaseModel {
+        // public:
+        //     CrossEntropyLoss() = default;
+        //
+        //     Tensor forward(const Tensor &input, const Tensor& ) override {
+        //         logits_ = input;
+        //
+        //         // Softmax
+        //         Tensor softmax_out = Functions::softmax(input);
+        //         softmax_ = softmax_out;
+        //         int batch_size = softmax_out.get_rows();
+        //
+        //
+        //         for(int i = 0; i < batch_size; ++i) {
+        //
+        //         }
+        //         int target_class = static_cast<int>(target_.at(0, 0));
+        //         float log_prob = std::log(softmax_out.at(0, target_class) + 1e-9f);  // защита от log(0)
+        //
+        //         return Tensor(1, 1, -log_prob);  // scalar loss
+        //     }
+        //
+        //     // Устанавливаем целевую метку
+        //     void set_target(const Tensor &target) {
+        //         target_ = target;
+        //     }
+        //
+        //     // ∂L/∂z = softmax(z) - one_hot(y)
+        //     Tensor getGrad(const Tensor &input) const override {
+        //         Tensor grad = softmax_;  // copy
+        //         int target_class = static_cast<int>(target_.at(0, 0));
+        //         grad.at(0, target_class) -= 1.0f;
+        //         return grad;
+        //     }
+        //
+        //     std::vector<Tensor *> get_parameters() const override {
+        //         return {};
+        //     }
+        //
+        //     void update_parameters(std::vector<Tensor> &new_params) override {}
+        //
+        //     std::vector<Tensor> getTrainParams_grad(const Tensor& input) const override {
+        //         return {};
+        //     }
+        //
+        // private:
+        //     Tensor logits_;
+        //     Tensor target_;
+        //     Tensor softmax_;
+        // };
     }
 }
 
