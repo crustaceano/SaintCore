@@ -20,7 +20,11 @@ add_executable(SaintCore
         src/functions.cpp
         src/model.cpp
         src/tensor.cpp
-        main.cpp)
+        main.cpp
+        visualization.cpp
+        include/perfect_visualization/visualization.h
+        Image.cpp
+        bmp_writer.cpp)
 
 add_executable(
         SaintCoreTests

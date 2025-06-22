@@ -3,13 +3,11 @@
 #include <vector>
 #include <string>
 #include <cstdint>
-#include <io.h>
-
-using namespace std;
+#include "visualization.h"
 
 // Структура для хранения данных MNIST
 struct MNIST_Example {
-    vector<double> pixels;  // 784 пикселя (0-255)
+    std::vector<double> pixels;  // 784 пикселя (0-255)
     int label;              // метка класса (0-9)
 };
 
@@ -20,19 +18,19 @@ uint32_t reverse_bytes(uint32_t v) {
 }
 
 // Загрузка данных из распакованных файлов
-vector<MNIST_Example> load_mnist(const string& images_path, const string& labels_path) {
-    vector<MNIST_Example> dataset;
+std::vector<MNIST_Example> load_mnist(const std::string& images_path, const std::string& labels_path) {
+    std::vector<MNIST_Example> dataset;
 
     // Открываем файлы изображений и меток
-    ifstream images_file(images_path, ios::binary);
+    std::ifstream images_file(images_path, std::ios::binary);
     if (!images_file) {
-        cerr << "Error opening images file: " << images_path << endl;
+        std::cerr << "Error opening images file: " << images_path << std::endl;
         return dataset;
     }
 
-    ifstream labels_file(labels_path, ios::binary);
+    std::ifstream labels_file(labels_path, std::ios::binary);
     if (!labels_file) {
-        cerr << "Error opening labels file: " << labels_path << endl;
+        std::cerr << "Error opening labels file: " << labels_path << std::endl;
         return dataset;
     }
 
@@ -58,13 +56,13 @@ vector<MNIST_Example> load_mnist(const string& images_path, const string& labels
 
     // Проверка согласованности данных
     if (magic != 2051 || labels_magic != 2049 || num_images != num_labels) {
-        cerr << "Invalid MNIST files format!" << endl;
+        std::cerr << "Invalid MNIST files format!" << std::endl;
         return dataset;
     }
 
     dataset.resize(num_images);
     const size_t image_size = rows * cols;
-    vector<unsigned char> buffer(image_size);
+    std::vector<unsigned char> buffer(image_size);
 
     // Чтение данных
     for (uint32_t i = 0; i < num_images; ++i) {
@@ -91,34 +89,32 @@ int main() {
 
         std::cout << "One" << std::endl;
         // Пути к распакованным файлам в папке mnist
-        const string base_path = "../mnist/";
+        const std::string base_path = "../mnist/";
 
         // Загрузка тренировочного набора
         auto train_set = load_mnist(
             base_path + "train-images.idx3-ubyte",
             base_path + "train-labels.idx1-ubyte"
         );
-        cout << "Loaded " << train_set.size() << " training examples" << endl;
+        std::cout << "Loaded " << train_set.size() << " training examples" << std::endl;
 
         // Загрузка тестового набора
         auto test_set = load_mnist(
             base_path + "t10k-images.idx3-ubyte",
             base_path + "t10k-labels.idx1-ubyte"
         );
-        cout << "Loaded " << test_set.size() << " test examples" << endl;
+        std::cout << "Loaded " << test_set.size() << " test examples" << std::endl;
 
         // Пример доступа к данным
         if (!train_set.empty()) {
-            cout << "\nFirst training example:" << endl;
-            cout << "Label: " << train_set[0].label << endl;
-            cout << "Pixel values (first 1000): ";
-            for (int i = 0; i < 1000; ++i) {
-                cout << static_cast<int>(train_set[0].pixels[i]) << " ";
-            }
-            cout << endl;
+            std::cout << "\nFirst training example:" << std::endl;
+            std::cout << "Label: " << train_set[1000].label << std::endl;
+
+            visualize(train_set[2000].pixels, "../visualized_data/output0.bmp");
+            std::cout << std::endl;
         }
     }
-    catch (exception& err) {
+    catch (std::exception& err) {
         std::cout << err.what() << std::endl;
     }
     catch (...) {
