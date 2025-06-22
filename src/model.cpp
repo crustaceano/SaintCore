@@ -41,7 +41,7 @@ Tensor LinearModel::getGrad(const Tensor &input) const {
 }
 
 std::vector<Tensor> LinearModel::getTrainParams_grad(const Tensor& input) const {
-    return {input.transposed(), get_E(1)};
+    return {input.transposed(), get_E(weights.get_cols())};
 }
 
 
