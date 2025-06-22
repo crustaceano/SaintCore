@@ -82,4 +82,3 @@ void SaintCore::Containers::SequenceContainer::optimize(floatT alpha) {
         items_[i].get()->update_parameters(new_params);
     }
 }
-
