@@ -23,14 +23,13 @@ namespace SaintCore {
             // Методы сериализации модели (по желанию)
             virtual void save(const std::string &path) const;
 
-            virtual std::vector<Tensor *> get_parameters() const;
+            virtual std::vector<Tensor *> get_parameters() const = 0;
 
-            virtual Tensor getGrad(const Tensor &input) const;
+            virtual Tensor getGrad(const Tensor &input) const = 0;
 
-            virtual std::vector<Tensor> getTrainParams_grad() const;
+            virtual std::vector<Tensor> getTrainParams_grad() const = 0;
 
-            virtual void load(const std::string &path) {
-            }
+            virtual void load(const std::string &path);
 
         protected:
             bool training_ = true;
@@ -48,6 +47,10 @@ namespace SaintCore {
             ~LinearModel() override;
 
             Tensor forward(const Tensor &input) override;
+
+            std::vector<Tensor *> get_parameters() const override;
+            Tensor getGrad(const Tensor &input) const override;
+            std::vector<Tensor> getTrainParams_grad() const override;
 
             Tensor get_weights() const {
                 return weights;
