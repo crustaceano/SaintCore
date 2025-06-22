@@ -1,8 +1,3 @@
-#include <ATen/core/interned_strings.h>
-x//
-// Created by axmed on 21.06.2025.
-//
-
 #ifndef MODEL_H
 #define MODEL_H
 #include <functions.h>
@@ -17,7 +12,7 @@ namespace SaintCore {
         class BaseModel {
         public:
             virtual ~BaseModel() = default;
-            virtual Tensor forward(const Tensor &input) = 0;
+            virtual Tensor forward(const std::vector<Tensor> &input) = 0;
 
             // Переключение режима обучения/инференса
             void train() { this->training_ = true; }
@@ -25,8 +20,9 @@ namespace SaintCore {
 
             virtual std::vector<Tensor *> get_parameters() const = 0;
             virtual void update_parameters(std::vector<Tensor> &new_params) = 0;
-            virtual Tensor getGrad(const Tensor &input) const = 0;
+            virtual Tensor getGrad(const std::vector<Tensor> &input) const = 0;
             virtual std::vector<Tensor> getTrainParams_grad(const Tensor& input) const = 0;
+            // virtual Tensor propagateGrad(Tensor &grad) = 0;
         protected:
             bool training_ = true;
         };
@@ -42,12 +38,13 @@ namespace SaintCore {
 
             ~LinearModel() override;
 
-            Tensor forward(const Tensor &input) override;
+            Tensor forward(const std::vector<Tensor> &input) override;
 
             std::vector<Tensor *> get_parameters() const override;
             void update_parameters(std::vector<Tensor> &new_params) override;
-            Tensor getGrad(const Tensor &input) const override;
+            Tensor getGrad(const std::vector<Tensor> &input) const override;
             std::vector<Tensor> getTrainParams_grad(const Tensor& input) const override;
+            // virtual Tensor propagateGrad(Tensor &grad) override;
 
             Tensor get_weights() const {
                 return weights;
@@ -68,7 +65,8 @@ namespace SaintCore {
         public:
             explicit ReLU() = default;
 
-            Tensor forward(const Tensor &input) override {
+            Tensor forward(const std::vector<Tensor> &inputs) override {
+                const Tensor& input = inputs[0];
                 Tensor output(input.get_rows(), input.get_cols());
                 for (int i = 0; i < input.get_rows(); ++i) {
                     for (int j = 0; j < input.get_cols(); ++j) {
@@ -78,13 +76,14 @@ namespace SaintCore {
                 return output;
             }
 
-            [[nodiscard]] std::vector<Tensor *> get_parameters() const override {
+            std::vector<Tensor *> get_parameters() const override {
                 return {};
             }
 
             void update_parameters(std::vector<Tensor> &new_params) override {}
 
-            [[nodiscard]] Tensor getGrad(const Tensor &input) const override {
+            Tensor getGrad(const std::vector<Tensor> &inputs) const override {
+                Tensor input = inputs[0];
                 Tensor grad(input.get_rows(), input.get_cols());
                 for (int i = 0; i < input.get_rows(); ++i) {
                     for (int j = 0; j < input.get_cols(); ++j) {
@@ -93,6 +92,7 @@ namespace SaintCore {
                 }
                 return grad;
             }
+
 
             [[nodiscard]] std::vector<Tensor> getTrainParams_grad(const Tensor& input) const override {
                 return {};
@@ -103,13 +103,14 @@ namespace SaintCore {
         public:
             CrossEntropyLoss() = default;
 
-            Tensor forward(const Tensor &input, const Tensor& targets) {
+            Tensor forward(const std::vector<Tensor> &inputs) override {
+                Tensor input = inputs[0], targets = inputs[1];
                 Tensor softmax_out = Functions::softmax(input);
 
                 int batch_size = softmax_out.get_rows();
                 float loss = 0.0f;
                 for(int i = 0; i < batch_size; ++i) {
-                    int target_class = static_cast<int>(targets.at(i, 0));
+                    int target_class = static_cast<int>(targets.at(0, i));
                     float log_prob =  -std::log(softmax_out.at(i, target_class));
                     loss += log_prob;
                 }
@@ -117,9 +118,10 @@ namespace SaintCore {
             }
 
             // ∂L/∂z = softmax(z) - one_hot(y)
-            Tensor getGrad(const Tensor &input, const Tensor& targets) const {
+            Tensor getGrad(const std::vector<Tensor> &inputs) const override {
+                Tensor input = inputs[0], targets = inputs[1];
                 Tensor softmax_out = Functions::softmax(input);
-                return softmax_out - Functions::one_hot(targets, input.get_cols());
+                return softmax_out - Functions::one_hot(targets, input.get_rows());
             }
 
             std::vector<Tensor *> get_parameters() const override {

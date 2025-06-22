@@ -45,6 +45,18 @@ if (WIN32)
     )
 endif()
 
+add_executable(ZOV_SaintCore
+        src/functions.cpp
+        src/model.cpp
+        src/tensor.cpp
+        src/container.cpp
+        visualization.cpp
+        src/Image.cpp
+        src/bmp_writer.cpp
+        mnist_reader.cpp
+        zov.cpp
+)
+
 # GoogleTest
 include(FetchContent)
 FetchContent_Declare(

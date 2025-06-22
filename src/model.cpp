@@ -5,11 +5,12 @@ using namespace SaintCore;
 using namespace SaintCore::Models;
 LinearModel::~LinearModel() = default;
 
-Tensor LinearModel::forward(const Tensor &input) {
+Tensor LinearModel::forward(const std::vector<Tensor> &inputs) {
     // input_dim - (1, in_channels)
     // weights - (in_channels, out_channels)
     // bias - (1, out_channels)
     // output_dim - (1, out_channels)
+    Tensor input = inputs[0];
     if (input.get_cols() != in_channels) {
         throw SizeMismatchException(
             "LinearModel_forward: Input dimension in mismatch: expected (batch_size " + std::to_string(in_channels) + "), got ("
@@ -30,7 +31,8 @@ void LinearModel::update_parameters(std::vector<Tensor> &new_params) {
 }
 
 
-Tensor LinearModel::getGrad(const Tensor &input) const {
+Tensor LinearModel::getGrad(const std::vector<Tensor> &inputs) const {
+    Tensor input = inputs[0];
     if (input.get_cols() != in_channels) {
         throw SizeMismatchException(
             "LinearModel_getGrad: Input dimension mismatch: expected (batch_size, " + std::to_string(in_channels) + "), got (" +

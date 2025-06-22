@@ -36,8 +36,8 @@ namespace SaintCore {
             virtual bool is_empty() const override;
             virtual void clear() override;
 
-            void forward(const Tensor& input);
-            void backward();
+            void forward(const Tensor& input, const Tensor& output);
+            void backward(const Tensor& output);
             void optimize(floatT alpha) override;
         private:
             std::vector<std::shared_ptr<Models::BaseModel>> items_;
