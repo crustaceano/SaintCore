@@ -44,6 +44,14 @@ namespace SaintCore {
 
             Tensor forward(const Tensor &input) override;
 
+            Tensor get_weights() const {
+                return weights;
+            }
+
+            Tensor get_bias() const {
+                return bias;
+            }
+
         private:
             int in_channels;
             int out_channels;
