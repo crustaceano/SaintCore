@@ -192,3 +192,17 @@ std::ostream& SaintCore::operator<<(std::ostream& os, const Tensor& tensor) {
 	}
 	return os;
 }
+
+
+SaintCore::Tensor get_E(int size) {
+	SaintCore::Tensor e(size, size);
+	for (int i = 0; i < e.get_rows(); i++) {
+		for (int j = 0; j < e.get_cols(); j++) {
+			if (i == j) e.at(i, j) = 1;
+			else e.at(i, j) = 0;
+		}
+	}
+	return e;
+}
+
+
