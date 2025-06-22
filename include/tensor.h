@@ -44,6 +44,8 @@ namespace SaintCore {
 		friend std::ostream& operator<<(std::ostream& os, const Tensor& tensor);
 
 	};
+
+	Tensor get_E(int size);
 }
 
 #endif //TENSOR_H

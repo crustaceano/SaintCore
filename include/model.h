@@ -21,8 +21,13 @@ namespace SaintCore {
             void eval() { this->training_ = false; }
 
             // Методы сериализации модели (по желанию)
-            virtual void save(const std::string &path) const {
-            }
+            virtual void save(const std::string &path) const;
+
+            virtual std::vector<Tensor *> get_parameters() const;
+
+            virtual Tensor getGrad(const Tensor &input) const;
+
+            virtual std::vector<Tensor> getTrainParams_grad() const;
 
             virtual void load(const std::string &path) {
             }
