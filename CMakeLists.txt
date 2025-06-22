@@ -21,7 +21,7 @@ add_executable(SaintCore
         src/model.cpp
         src/tensor.cpp
         src/container.cpp
-        main.cpp
+        main_container.cpp
         visualization.cpp
         include/perfect_visualization/visualization.h
         Image.cpp
