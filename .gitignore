@@ -6,6 +6,7 @@ cmake_install.cmake
 Makefile
 build/
 
+.idea/
 
 # Prerequisites
 *.d

@@ -8,7 +8,7 @@ LinearModel::~LinearModel() = default;
 Tensor LinearModel::forward(const Tensor &input) {
     // input_dim - (1, in_channels)
     // weights - (in_channels, out_channels)
-    // bias - (1, out_channels)
+    // bias - (1, out_channels
     // output_dim - (1, out_channels)
     if (input.get_cols() != in_channels) {
         throw SizeMismatchException(
