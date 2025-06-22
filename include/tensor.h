@@ -25,9 +25,13 @@ namespace SaintCore {
 		// elements multiply
 		friend Tensor operator%(Tensor const& a, Tensor const& b);
 
+
+		void checkIndex(int ind1, int ind2) const;
 		// get by index
-		std::vector<floatT> const& operator[](int ind) const;
-		std::vector<floatT>& operator[](int ind);
+		floatT const& at(int ind1, int ind2) const;
+		floatT & at(int ind1, int ind2);
+		// std::vector<floatT> const& operator[](int ind) const;
+		// std::vector<floatT>& operator[](int ind);
 
 		friend bool operator==(Tensor const& a, Tensor const& b);
 
