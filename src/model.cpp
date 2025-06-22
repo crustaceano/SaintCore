@@ -1,9 +1,11 @@
 #include <include/model.h>
 #include <include/exceptions.h>
 
-SaintCore::Models::LinearModel::~LinearModel() = default;
+using namespace SaintCore;
+using namespace SaintCore::Models;
+LinearModel::~LinearModel() = default;
 
-SaintCore::Tensor SaintCore::Models::LinearModel::forward(const Tensor &input) {
+Tensor LinearModel::forward(const Tensor &input) {
     // input_dim - (1, in_channels)
     // weights - (in_channels, out_channels)
     // bias - (1, out_channels)
@@ -15,3 +17,28 @@ SaintCore::Tensor SaintCore::Models::LinearModel::forward(const Tensor &input) {
     }
     return input * weights + bias;
 }
+
+
+std::vector<Tensor*> LinearModel::get_parameters() const {
+    return {const_cast<Tensor*>(&weights), const_cast<Tensor*>(&bias)};
+}
+
+Tensor LinearModel::getGrad(const Tensor &input) const {
+    if (input.get_cols() != in_channels) {
+        throw SizeMismatchException(
+            "LinearModel_getGrad: Input dimension mismatch: expected (batch_size, " + std::to_string(in_channels) + "), got (" +
+            std::to_string(input.get_rows()) + ", " + std::to_string(input.get_cols()) + ")");
+    }
+
+    return weights.transposed(); // (out_channels, in_channels) → (in_channels, out_channels)
+}
+
+std::vector<Tensor> LinearModel::getTrainParams_grad() const {
+    return {weights.transposed(), get_E(weights.get_cols())};
+}
+
+
+
+
+
+
