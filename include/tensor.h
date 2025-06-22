@@ -13,7 +13,7 @@ namespace SaintCore {
 	public:
 		explicit Tensor(int rows, int cols);
 		Tensor(std::vector<std::vector<floatT>> const & vec);
-		
+
 		// sum
 		friend Tensor operator+(Tensor const& a, Tensor const& b);
 		// substract
