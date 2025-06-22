@@ -7,31 +7,43 @@
 TEST(Tensor, Base) {
     using namespace SaintCore;
     EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} }), Tensor({ {1, 2, 3}, {4, 5, 6} }));
-    EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} })[1][1], 5);
+    EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} }).at(1, 1), 5);
     EXPECT_THROW(Tensor({{1, 2}, {3}}), BaseException);
 }
 
 
 TEST(Tensor, Index) {
     using namespace SaintCore;
-    EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} })[0][0], 1);
-    EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} })[0][1], 2);
-    EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} })[0][2], 3);
-    EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} })[1][0], 4);
-    EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} })[1][1], 5);
-    EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} })[1][2], 6);
-    EXPECT_THROW(Tensor({{1, 2, 3}, {4, 5, 6}})[-1], BaseException);
-    EXPECT_THROW(Tensor({{1, 2, 3}, {4, 5, 6}})[3], BaseException);
-    EXPECT_THROW(Tensor({{1, 2, 3}, {4, 5, 6}})[2], BaseException);
+    EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} }).at(0, 0), 1);
+    EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} }).at(0, 1), 2);
+    EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} }).at(0, 2), 3);
+    EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} }).at(1, 0), 4);
+    EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} }).at(1, 1), 5);
+    EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} }).at(1, 2), 6);
+    EXPECT_THROW(Tensor({{1, 2, 3}, {4, 5, 6}}).at(-1, 0), BaseException);
+    EXPECT_THROW(Tensor({{1, 2, 3}, {4, 5, 6}}).at(-1, -1), BaseException);
+    EXPECT_THROW(Tensor({{1, 2, 3}, {4, 5, 6}}).at(0, -1), BaseException);
+    EXPECT_THROW(Tensor({{1, 2, 3}, {4, 5, 6}}).at(-100, -100), BaseException);
+    EXPECT_THROW(Tensor({{1, 2, 3}, {4, 5, 6}}).at(-100, 0), BaseException);
+    EXPECT_THROW(Tensor({{1, 2, 3}, {4, 5, 6}}).at(0, -100), BaseException);
+    EXPECT_THROW(Tensor({{1, 2, 3}, {4, 5, 6}}).at(100, 0), BaseException);
+    EXPECT_THROW(Tensor({{1, 2, 3}, {4, 5, 6}}).at(0, 100), BaseException);
+    EXPECT_THROW(Tensor({{1, 2, 3}, {4, 5, 6}}).at(100, 100), BaseException);
+    EXPECT_THROW(Tensor({{1, 2, 3}, {4, 5, 6}}).at(2, 0), BaseException);
+    EXPECT_THROW(Tensor({{1, 2, 3}, {4, 5, 6}}).at(0, 3), BaseException);
+    EXPECT_THROW(Tensor({{1, 2, 3}, {4, 5, 6}}).at(2, 3), BaseException);
 }
 
 
 TEST(Tensor, Equal) {
     using namespace SaintCore;
-    EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} }), Tensor({ {1, 2, 3}, {4, 5, 6} });
-    EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} }), );
-    EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} }), );
-    EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} }), );
-    EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} }), );
-    EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} }), );
+    floatT eps = 5e-1;
+    floatT s1 = 1 + eps, s2 = 2 + eps, s3 = 3 + eps, s4 = 4 + eps, s5 = 5 + eps, s6 = 6 + eps;
+    std::cout << Tensor::eps << std::endl;
+    EXPECT_NE(Tensor({ {1, 2, 3}, {4, 5, 6} }), Tensor({ {s1, s2, s3}, {s4, s5, s6} }));
+    // EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} }), );
+    // EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} }), );
+    // EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} }), );
+    // EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} }), );
+    // EXPECT_EQ(Tensor({ {1, 2, 3}, {4, 5, 6} }), );
 }

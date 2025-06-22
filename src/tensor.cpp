@@ -120,9 +120,12 @@ std::vector<SaintCore::floatT>& SaintCore::Tensor::operator[](int ind) {
 bool SaintCore::operator==(Tensor const& a, Tensor const& b) {
 	if (a.rows != b.rows || a.cols != b.cols) return false;
 	for (int i = 0; i < a.rows; i++)
-		for (int j = 0; j < a.cols; j++)
+		for (int j = 0; j < a.cols; j++) {
+			float x = abs(a.at(i, j) - b.at(i, j));
+			float y
 			if (abs(a.at(i, j) - b.at(i, j)) > SaintCore::Tensor::eps)
 				return false;
+		}
 	return true;
 }
 
