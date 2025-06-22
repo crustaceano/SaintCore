@@ -9,6 +9,7 @@ namespace SaintCore {
 	class Tensor {
 		int cols, rows;
 		std::vector<std::vector<floatT>> data;
+		static const floatT eps;
 	public:
 		Tensor(int rows, int cols);
 		Tensor(std::vector<std::vector<floatT>> const & vec);
@@ -27,6 +28,8 @@ namespace SaintCore {
 		// get by index
 		std::vector<floatT> const& operator[](int ind) const;
 		std::vector<floatT>& operator[](int ind);
+
+		friend bool operator==(Tensor const& a, Tensor const& b);
 
 		// get transposed
 		Tensor transposed() const;
