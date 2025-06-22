@@ -107,8 +107,8 @@ int main() {
 
         // Пример доступа к данным
         if (!train_set.empty()) {
-            std::cout << "\nFirst training example:" << std::endl;
-            std::cout << "Label: " << train_set[1000].label << std::endl;
+            std::cout << "\n2000`s training example:" << std::endl;
+            std::cout << "Label: " << train_set[2000].label << std::endl;
 
             visualize(train_set[2000].pixels, "../visualized_data/output0.bmp");
             std::cout << std::endl;
