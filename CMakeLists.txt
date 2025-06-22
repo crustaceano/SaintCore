@@ -16,11 +16,6 @@ FetchContent_MakeAvailable(googletest)
 
 # Основной исполняемый файл
 add_executable(SaintCore
-        include/functions.h
-        include/model.h
-        include/tensor.h
-        include/exceptions.h
-        include/types.h
         src/functions.cpp
         src/model.cpp
         src/tensor.cpp
@@ -28,14 +23,11 @@ add_executable(SaintCore
 
 add_executable(
         SaintCoreTests
-        include/functions.h
-        include/model.h
-        include/tensor.h
-        include/exceptions.h
-        include/types.h
         src/functions.cpp
         src/model.cpp
         src/tensor.cpp
+        tests/test_functions.cpp
+        tests/test_tensor.cpp
 )
 
 target_include_directories(SaintCoreTests PRIVATE include)
