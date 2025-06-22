@@ -9,6 +9,9 @@ float randomFloat() {
 }
 
 
+const SaintCore::floatT SaintCore::Tensor::eps = 1e-6;
+
+
 SaintCore::Tensor::Tensor(int rows, int cols) : cols(cols), rows(rows) {
 	data.assign(rows, std::vector<floatT>(cols, 0));
 	for (int i = 0; i < rows; i++)
@@ -94,6 +97,17 @@ std::vector<SaintCore::floatT> const& SaintCore::Tensor::operator[](int ind) con
 std::vector<SaintCore::floatT>& SaintCore::Tensor::operator[](int ind) {
 	return data[ind];
 }
+
+
+bool SaintCore::operator==(Tensor const& a, Tensor const& b) {
+	if (a.rows != b.rows || a.cols != b.cols) return false;
+	for (int i = 0; i < a.rows; i++)
+		for (int j = 0; j < a.cols; j++)
+			if (abs(a[i][j] - b[i][j]) < SaintCore::Tensor::eps)
+				return false;
+	return true;
+}
+
 
 // OK
 SaintCore::Tensor SaintCore::Tensor::transposed() const {
