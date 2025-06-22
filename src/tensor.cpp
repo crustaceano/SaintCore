@@ -194,7 +194,7 @@ std::ostream& SaintCore::operator<<(std::ostream& os, const Tensor& tensor) {
 }
 
 
-SaintCore::Tensor get_E(int size) {
+SaintCore::Tensor SaintCore::get_E(int size) {
 	SaintCore::Tensor e(size, size);
 	for (int i = 0; i < e.get_rows(); i++) {
 		for (int j = 0; j < e.get_cols(); j++) {
