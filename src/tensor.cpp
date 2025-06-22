@@ -42,7 +42,7 @@ SaintCore::Tensor SaintCore::operator+(Tensor const& a, Tensor const& b) {
 	Tensor c(a.get_rows(), a.get_cols());
 	for (int i = 0; i < a.get_rows(); i++)
 		for (int j = 0; j < a.get_cols(); j++)
-			c[i][j] = a[i][j] + b[i][j];
+			c.at(i, j) = a.at(i, j) + b.at(i, j);
 	return c;
 }
 
@@ -53,9 +53,9 @@ SaintCore::Tensor SaintCore::operator*(Tensor const& a, Tensor const& b) {
 	Tensor c(a.get_rows(), b.get_cols());
 	for (int i = 0; i < a.get_rows(); i++)
 		for (int j = 0; j < b.get_cols(); j++) {
-			c[i][j] = 0;
+			c.at(i, j) = 0;
 			for (int k = 0; k < a.get_cols(); k++)
-				c[i][j] += a[i][k] * b[k][j];
+				c.at(i, j) += a.at(i, k) * b.at(k, j);
 		}
 	return c;
 }
@@ -73,7 +73,7 @@ SaintCore::Tensor SaintCore::operator*(Tensor const& a, float b) {
 	Tensor c(a.get_rows(), a.get_cols());
 	for (int i = 0; i < a.get_rows(); i++)
 		for (int j = 0; j < a.get_cols(); j++)
-			c[i][j] = a[i][j] * b;
+			c.at(i, j) = a.at(i, j) * b;
 	return c;
 }
 
@@ -84,27 +84,44 @@ SaintCore::Tensor SaintCore::operator%(Tensor const& a, Tensor const& b) {
 	Tensor c(a.get_rows(), a.get_cols());
 	for (int i = 0; i < a.get_rows(); i++)
 		for (int j = 0; j < a.get_cols(); j++)
-			c[i][j] = a[i][j] * b[i][j];
+			c.at(i, j) = a.at(i, j) * b.at(i, j);
 	return c;
 }
 
 
-std::vector<SaintCore::floatT> const& SaintCore::Tensor::operator[](int ind) const {
-	return data[ind];
+void SaintCore::Tensor::checkIndex(int ind1, int ind2) const {
+	if (ind1 < 0 || ind1 >= rows || ind2 < 0 || ind2 >= cols) throw BaseException("Index out of range");
 }
 
 
-std::vector<SaintCore::floatT>& SaintCore::Tensor::operator[](int ind) {
-	if (ind < 0 || ind >= rows) throw BaseException("Index out of range");
-	return data[ind];
+SaintCore::floatT const& SaintCore::Tensor::at(int ind1, int ind2) const {
+	checkIndex(ind1, ind2);
+	return data[ind1][ind2];
 }
+
+
+SaintCore::floatT & SaintCore::Tensor::at(int ind1, int ind2) {
+	checkIndex(ind1, ind2);
+	return data[ind1][ind2];
+}
+
+
+// std::vector<SaintCore::floatT> const& SaintCore::Tensor::operator[](int ind) const {
+// 	return data[ind];
+// }
+//
+//
+// std::vector<SaintCore::floatT>& SaintCore::Tensor::operator[](int ind) {
+// 	if (ind < 0 || ind >= rows) throw BaseException("Index out of range");
+// 	return data[ind];
+// }
 
 
 bool SaintCore::operator==(Tensor const& a, Tensor const& b) {
 	if (a.rows != b.rows || a.cols != b.cols) return false;
 	for (int i = 0; i < a.rows; i++)
 		for (int j = 0; j < a.cols; j++)
-			if (abs(a[i][j] - b[i][j]) > SaintCore::Tensor::eps)
+			if (abs(a.at(i, j) - b.at(i, j)) > SaintCore::Tensor::eps)
 				return false;
 	return true;
 }
@@ -115,7 +132,7 @@ SaintCore::Tensor SaintCore::Tensor::transposed() const {
 	Tensor c(cols, rows);
 	for (int i = 0; i < rows; i++)
 		for (int j = 0; j < cols; j++)
-			c[j][i] = data[i][j];
+			c.at(j, i) = data[i][j];
 	return c;
 }
 
@@ -133,7 +150,7 @@ int SaintCore::Tensor::get_rows() const {
 std::ostream& SaintCore::operator<<(std::ostream& os, const Tensor& tensor) {
 	for (int i = 0; i < tensor.get_rows(); i++) {
 		for (int j = 0; j < tensor.get_cols(); j++) {
-			os << tensor[i][j] << " ";
+			os << tensor.at(i, j) << " ";
 		}
 		os << "\n";
 	}
