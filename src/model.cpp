@@ -23,6 +23,13 @@ std::vector<Tensor*> LinearModel::get_parameters() const {
     return {const_cast<Tensor*>(&weights), const_cast<Tensor*>(&bias)};
 }
 
+
+void LinearModel::update_parameters(std::vector<Tensor> &new_params) {
+    weights = new_params[0];
+    bias = new_params[1];
+}
+
+
 Tensor LinearModel::getGrad(const Tensor &input) const {
     if (input.get_cols() != in_channels) {
         throw SizeMismatchException(
@@ -33,8 +40,8 @@ Tensor LinearModel::getGrad(const Tensor &input) const {
     return weights.transposed(); // (out_channels, in_channels) → (in_channels, out_channels)
 }
 
-std::vector<Tensor> LinearModel::getTrainParams_grad() const {
-    return {weights.transposed(), get_E(weights.get_cols())};
+std::vector<Tensor> LinearModel::getTrainParams_grad(const Tensor& input) const {
+    return {input.transposed(), get_E(1)};
 }
 
 

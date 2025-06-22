@@ -24,6 +24,7 @@ add_executable(SaintCore
         src/functions.cpp
         src/model.cpp
         src/tensor.cpp
+        src/container.cpp
         main.cpp
         visualization.cpp
         src/Image.cpp
