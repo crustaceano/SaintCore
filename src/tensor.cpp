@@ -41,15 +41,39 @@ SaintCore::Tensor::Tensor(std::vector<std::vector<floatT>> const& vec) {
 }
 
 
-
 // OK
 SaintCore::Tensor SaintCore::operator+(Tensor const& a, Tensor const& b) {
-	if (a.get_cols() != b.get_cols() || a.get_rows() != b.get_rows()) throw BaseException("Not equal size");
-	Tensor c(a.get_rows(), a.get_cols());
-	for (int i = 0; i < a.get_rows(); i++)
-		for (int j = 0; j < a.get_cols(); j++)
-			c.at(i, j) = a.at(i, j) + b.at(i, j);
-	return c;
+	if (a.get_cols() != b.get_cols() && a.get_rows() != b.get_rows()) throw BaseException("Not equal size");
+	if (a.get_cols() == b.get_cols() && a.get_rows() == b.get_rows()) {
+		Tensor c(a.get_rows(), a.get_cols());
+		for (int i = 0; i < a.get_rows(); i++)
+			for (int j = 0; j < a.get_cols(); j++)
+				c.at(i, j) = a.at(i, j) + b.at(i, j);
+		return c;
+	}
+	if (a.get_cols() == b.get_cols() && std::min(a.get_rows(), b.get_rows()) == 1) {
+		Tensor c(std::max(a.get_rows(), b.get_rows()), a.get_cols());
+		for (int i = 0; i < c.get_rows(); i++)
+			for (int j = 0; j < c.get_cols(); j++) {
+				if (a.get_rows() == 1)
+					c.at(i, j) = a.at(0, j) + b.at(i, j);
+				else
+					c.at(i, j) = a.at(i, j) + b.at(0, j);
+			}
+		return c;
+	}
+	if (a.get_rows() == b.get_rows() && std::min(a.get_cols(), b.get_cols()) == 1) {
+		Tensor c(a.get_rows(), std::max(a.get_cols(), b.get_cols()));
+		for (int i = 0; i < c.get_rows(); i++)
+			for (int j = 0; j < c.get_cols(); j++) {
+				if (a.get_cols() == 1)
+					c.at(i, j) = a.at(i, 0) + b.at(i, j);
+				else
+					c.at(i, j) = a.at(i, j) + b.at(i, 0);
+			}
+		return c;
+	}
+	throw BaseException("Strange size, bitch");;
 }
 
 
