@@ -110,14 +110,14 @@ void test_container() {
     floatT alpha = 0.5;
 
     for (int i = 0; i < 5; i++) {
-        std::cout << *sequence_container.get(0).get()->get_parameters()[0] << std::endl;
-        std::cout << *sequence_container.get(1).get()->get_parameters()[1] << std::endl;
+        std::cout << *sequence_container.get(0)->get_parameters()[0] << std::endl;
+        std::cout << *sequence_container.get(1)->get_parameters()[1] << std::endl;
         sequence_container.forward(input);
         sequence_container.backward();
         sequence_container.optimize(alpha);
     }
-    std::cout << *sequence_container.get(0).get()->get_parameters()[0] << std::endl;
-    std::cout << *sequence_container.get(1).get()->get_parameters()[1] << std::endl;
+    std::cout << *sequence_container.get(0)->get_parameters()[0] << std::endl;
+    std::cout << *sequence_container.get(1)->get_parameters()[1] << std::endl;
 }
 
 
