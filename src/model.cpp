@@ -1,5 +1,7 @@
 #include <include/model.h>
 #include <include/exceptions.h>
+#include <include/tensor.h>
+
 
 using namespace SaintCore;
 using namespace SaintCore::Models;
@@ -31,6 +33,7 @@ void LinearModel::update_parameters(std::vector<Tensor> &new_params) {
 }
 
 
+
 Tensor LinearModel::getGrad(const std::vector<Tensor> &inputs) const {
     Tensor input = inputs[0];
     if (input.get_cols() != in_channels) {
@@ -40,6 +43,16 @@ Tensor LinearModel::getGrad(const std::vector<Tensor> &inputs) const {
     }
 
     return weights.transposed(); // (out_channels, in_channels) → (in_channels, out_channels)
+}
+
+Tensor LinearModel::propagateGrad(const std::vector<Tensor> &input, Tensor &grad) {
+    Tensor cur_grads = getGrad(input);
+    return grad * cur_grads;
+}
+
+std::vector<Tensor> LinearModel::grad_from_trainable(const std::vector<Tensor> &inputs, Tensor &grad) {
+    Tensor input = inputs[0];
+    return {input.transposed() * grad, Functions::sum(grad, 0)};
 }
 
 std::vector<Tensor> LinearModel::getTrainParams_grad(const Tensor& input) const {

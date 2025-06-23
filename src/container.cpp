@@ -46,10 +46,10 @@ void SaintCore::Containers::SequenceContainer::clear() {
 void SaintCore::Containers::SequenceContainer::forward(const Tensor &input, const Tensor &ouput) {
     inputs.clear();
     inputs.push_back(input);
-    for (int i = 0; i + 2 < items_.size(); i++) {
+    for (int i = 0; i + 1 < items_.size(); i++) {
         inputs.push_back(items_[i].get()->forward({inputs.back()}));
     }
-    inputs.push_back(items_.back().get()->forward({inputs.back(), ouput}));
+    // inputs.push_back(items_.back().get()->forward({inputs.back(), ouput}));
 }
 
 
@@ -59,10 +59,12 @@ void SaintCore::Containers::SequenceContainer::backward(const Tensor &output) {
     for (int i = items_.size() - 2; i >= 0; i--) {
         std::vector<Tensor> params = items_[i].get()->getTrainParams_grad(inputs[i]);
         paramsGrads.push_back({});
-        for (int j = 0; j < params.size(); j++) {
-            paramsGrads.back().push_back(params[j] * step);
+        std::vector<Tensor> calced_grads_from_trainables = items_[i].get()->grad_from_trainable({inputs[i]}, step);
+        for (int j = 0; j < calced_grads_from_trainables.size(); j++) {
+            paramsGrads.back().push_back(calced_grads_from_trainables[j]);
         }
-        step = step * items_[i].get()->getGrad({inputs[i]});
+        // step = step * items_[i].get()->get({inputs[i]});
+        step = items_[i].get()->propagateGrad({inputs[i]}, step);
     }
     std::reverse(paramsGrads.begin(), paramsGrads.end());
 }
@@ -76,8 +78,8 @@ void SaintCore::Containers::SequenceContainer::optimize(floatT alpha) {
         // std :: cout << paramsGrads[0].size() << std::endl;
         // std :: cout << params.size() << std::endl;
         for (int j = 0; j < params.size(); j++) {
-            paramsGrads[i][j] * alpha;
-            *(params[j]);
+            // paramsGrads[i][j] * alpha;
+            // *(params[j]);
             new_params.push_back(*(params[j]) - paramsGrads[i][j] * alpha);
         }
         items_[i].get()->update_parameters(new_params);
