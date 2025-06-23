@@ -14,6 +14,7 @@ namespace SaintCore {
         Tensor exp(const Tensor& input);
         Tensor sum(const Tensor& input, int axis = -1);
         Tensor one_hot(const Tensor& input, int num_classes);
+        Tensor argmax(const Tensor& input);
     }
 }
 

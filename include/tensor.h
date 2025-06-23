@@ -11,8 +11,9 @@ namespace SaintCore {
 		std::vector<std::vector<floatT>> data;
 		static const floatT eps;
 	public:
-		explicit Tensor(int rows, int cols);
+		explicit Tensor(int rows = 0, int cols = 0);
 		Tensor(std::vector<std::vector<floatT>> const & vec);
+		Tensor(std::vector<floatT> const & vec);
 
 		// sum
 		friend Tensor operator+(Tensor const& a, Tensor const& b);
