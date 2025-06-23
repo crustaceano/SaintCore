@@ -58,12 +58,12 @@ SaintCore::Containers::SequenceContainer get_model() {
     LinearModel linear_model1(784, 128);
     ReLU relu1;
     LinearModel linear_model2(128, 10);
-    ReLU relu2;
+    // ReLU relu2;
     CrossEntropyLoss cross_entropy_loss;
     sequence_container.add(std::make_shared<LinearModel>(linear_model1));
     sequence_container.add(std::make_shared<ReLU>(relu1));
     sequence_container.add(std::make_shared<LinearModel>(linear_model2));
-    sequence_container.add(std::make_shared<ReLU>(relu2));
+    // sequence_container.add(std::make_shared<ReLU>(relu2));
     sequence_container.add(std::make_shared<CrossEntropyLoss>(cross_entropy_loss));
     return sequence_container;
 }
@@ -153,6 +153,10 @@ void val_epoch(SaintCore::Containers::SequenceContainer &model,
         if (metric.first == "batch_am") continue;
         total_metrics[metric.first] /= total_metrics["batch_am"];
     }
+    std::cout << "Validation Epoch Metrics: ";
+    for (const auto &metric: total_metrics) {
+        std::cout << metric.first << ": " << metric.second << ", ";
+    }
 }
 
 
@@ -180,7 +184,7 @@ int main() {
     std::vector labels(p.second);
     int train_size = data.get_rows() * 0.8;
     int val_size = data.get_rows() - train_size;
-    int batch_size = 128;
+    int batch_size = 64;
 
     int train_bs = (train_size - 1) / batch_size + 1;
     int val_bs = (val_size - 1) / batch_size + 1;
