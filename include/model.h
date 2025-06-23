@@ -15,10 +15,6 @@ namespace SaintCore {
 
             virtual Tensor forward(const std::vector<Tensor> &input) = 0;
 
-            // Переключение режима обучения/инференса
-            void train() { this->training_ = true; }
-            void eval() { this->training_ = false; }
-
             virtual std::vector<Tensor *> get_parameters() const = 0;
 
             virtual void update_parameters(std::vector<Tensor> &new_params) = 0;
@@ -30,6 +26,7 @@ namespace SaintCore {
             virtual Tensor propagateGrad(const std::vector<Tensor> &input, Tensor &grad) = 0;
 
             virtual std::vector<Tensor> grad_from_trainable(const std::vector<Tensor> &input, Tensor &grad) = 0;
+
 
         protected:
             bool training_ = true;
@@ -97,7 +94,6 @@ namespace SaintCore {
             }
 
             void update_parameters(std::vector<Tensor> &new_params) override {
-
             }
 
             Tensor getGrad(const std::vector<Tensor> &inputs) const override {
