@@ -15,18 +15,24 @@ namespace SaintCore {
 
             virtual Tensor forward(const std::vector<Tensor> &input) = 0;
 
-            virtual std::vector<Tensor *> get_parameters() const = 0;
+            virtual std::vector<Tensor *> get_parameters() const {
+                return {};
+            };
 
-            virtual void update_parameters(std::vector<Tensor> &new_params) = 0;
+            virtual void update_parameters(std::vector<Tensor> &new_params) {
+            }
 
             virtual Tensor getGrad(const std::vector<Tensor> &input) const = 0;
 
-            virtual std::vector<Tensor> getTrainParams_grad(const Tensor &input) const = 0;
+            virtual std::vector<Tensor> getTrainParams_grad(const Tensor &input) const {
+                return {};
+            }
 
             virtual Tensor propagateGrad(const std::vector<Tensor> &input, Tensor &grad) = 0;
 
-            virtual std::vector<Tensor> grad_from_trainable(const std::vector<Tensor> &input, Tensor &grad) = 0;
-
+            virtual std::vector<Tensor> grad_from_trainable(const std::vector<Tensor> &input, Tensor &grad) {
+                return {};
+            }
 
         protected:
             bool training_ = true;
@@ -89,12 +95,6 @@ namespace SaintCore {
                 return output;
             }
 
-            std::vector<Tensor *> get_parameters() const override {
-                return {};
-            }
-
-            void update_parameters(std::vector<Tensor> &new_params) override {
-            }
 
             Tensor getGrad(const std::vector<Tensor> &inputs) const override {
                 Tensor input = inputs[0];
@@ -110,14 +110,6 @@ namespace SaintCore {
             Tensor propagateGrad(const std::vector<Tensor> &input, Tensor &grad) override {
                 Tensor cur_grads = getGrad(input); // (batch_size, in_channels)
                 return grad % cur_grads;
-            }
-
-            std::vector<Tensor> grad_from_trainable(const std::vector<Tensor> &input, Tensor &grad) override {
-                return {};
-            }
-
-            [[nodiscard]] std::vector<Tensor> getTrainParams_grad(const Tensor &input) const override {
-                return {};
             }
         };
 
@@ -149,21 +141,6 @@ namespace SaintCore {
             Tensor propagateGrad(const std::vector<Tensor> &input, Tensor &grad) override {
                 Tensor cur_grads = getGrad(input); // (batch_size, in_channels)
                 return grad * cur_grads;
-            }
-
-            std::vector<Tensor> grad_from_trainable(const std::vector<Tensor> &input, Tensor &grad) override {
-                return {};
-            }
-
-            std::vector<Tensor *> get_parameters() const override {
-                return {};
-            }
-
-            void update_parameters(std::vector<Tensor> &new_params) override {
-            }
-
-            std::vector<Tensor> getTrainParams_grad(const Tensor &input) const override {
-                return {};
             }
         };
     }

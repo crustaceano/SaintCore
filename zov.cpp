@@ -214,5 +214,4 @@ int main() {
 
     model.load("ZOV.zov");
     val_epoch(model, val_data, val_labels);
-
 }

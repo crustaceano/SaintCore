@@ -90,7 +90,7 @@ TEST(Tensor, MatMul) {
     EXPECT_EQ(Tensor({{1, 2}}) * Tensor({{1, 2}}).transposed(), Tensor({std::vector<floatT>{5}}));
     EXPECT_EQ(Tensor({{1, 2, 3}, {4, 5, 6}}) * Tensor({{1, 2}, {3, 4}, {5, 6}}),
         Tensor({{22, 28}, {49, 64}}));
-    EXPECT_EQ(Tensor({{1, 2, 3}}) * Tensor({{4}, {5}, {6}}),
+    EXPECT_EQ(Tensor({{1, 2, 3}}) * Tensor(std::vector<std::vector<floatT>>{{4}, {5}, {6}}),
         Tensor({std::vector<floatT>{32}}));
     EXPECT_THROW(Tensor({{1, 2, 3, 4}, {5, 6, 7, 8}}) * Tensor({{1, 2}, {3, 4}, {5, 6}}), BaseException);
 }
