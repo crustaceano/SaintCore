@@ -1,7 +1,6 @@
 #include "mnist_reader.h"
 #include <fstream>
 #include <iostream>
-#include <libtorch/include/torch/library.h>
 
 // Функция для реверса байтов
 uint32_t reverse_bytes(uint32_t v) {
