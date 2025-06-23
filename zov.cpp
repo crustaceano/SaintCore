@@ -164,18 +164,10 @@ int main() {
     using namespace SaintCore;
     using namespace Containers;
     using namespace Models;
-    std::cout << "Sosali\n";
 
 
     floatT alpha = 0.01f;
     SequenceContainer model = get_model();
-    // for (int i = 0; i < 5; i++) {
-    //     // std::cout << *sequence_container.get(0).get()->get_parameters()[0] << std::endl;
-    //     // std::cout << *sequence_container.get(1).get()->get_parameters()[1] << std::endl;
-    //     model.forward(input, output);
-    //     model.backward(output);
-    //     model.optimize(alpha);
-    // }
 
     std::vector<MNIST_Example> dataset = load_dataset("train-images.idx3-ubyte", "train-labels.idx1-ubyte");
     shuffle(dataset);
@@ -218,6 +210,9 @@ int main() {
 
     // train_epoch(model, train_data, train_labels, alpha);
     // val_epoch(model, val_data, val_labels);
-    train_epoch(model, train_data, train_labels, alpha);
+    // train_epoch(model, train_data, train_labels, alpha);
+
+    model.load("ZOV.zov");
     val_epoch(model, val_data, val_labels);
+
 }

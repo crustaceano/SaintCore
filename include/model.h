@@ -31,7 +31,6 @@ namespace SaintCore {
 
             virtual std::vector<Tensor> grad_from_trainable(const std::vector<Tensor> &input, Tensor &grad) = 0;
 
-
         protected:
             bool training_ = true;
         };
@@ -98,6 +97,7 @@ namespace SaintCore {
             }
 
             void update_parameters(std::vector<Tensor> &new_params) override {
+
             }
 
             Tensor getGrad(const std::vector<Tensor> &inputs) const override {

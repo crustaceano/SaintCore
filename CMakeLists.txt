@@ -21,10 +21,11 @@ include_directories(include/perfect_visualization)
 
 # Основной исполняемый файл
 add_executable(SaintCore
-        src/functions.cpp
-        src/model.cpp
-        src/tensor.cpp
-        src/container.cpp
+#        src/functions.cpp
+#        src/model.cpp
+#        src/tensor.cpp
+#        src/container.cpp
+#        src/serialization.cpp
         main.cpp
         visualization.cpp
         src/Image.cpp
@@ -50,6 +51,7 @@ add_executable(ZOV_SaintCore
         src/model.cpp
         src/tensor.cpp
         src/container.cpp
+        src/serialization.cpp
         visualization.cpp
         src/Image.cpp
         src/bmp_writer.cpp
@@ -71,6 +73,7 @@ add_executable(SaintCoreTests
         src/model.cpp
         src/tensor.cpp
         src/container.cpp
+        src/serialization.cpp
         tests/test_functions.cpp
         tests/test_tensor.cpp
         tests/test_model.cpp

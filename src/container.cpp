@@ -16,6 +16,10 @@ std::shared_ptr<SaintCore::Models::BaseModel> SaintCore::Containers::SequenceCon
     return items_[index];
 }
 
+std::shared_ptr<SaintCore::Models::BaseModel> SaintCore::Containers::SequenceContainer::get(size_t index) const {
+    checkIndex(index);
+    return items_[index];
+}
 
 void SaintCore::Containers::SequenceContainer::add(std::shared_ptr<Models::BaseModel> item) {
     items_.push_back(item);

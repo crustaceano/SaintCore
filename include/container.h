@@ -18,6 +18,12 @@ namespace SaintCore {
             virtual bool is_empty() const = 0;
             virtual void clear() = 0;
             virtual void optimize(floatT alpha) = 0;
+            std::shared_ptr<Models::BaseModel> get(size_t index);
+            std::shared_ptr<Models::BaseModel> get(size_t index) const;
+
+            // сериализация
+            void save(const std::string &filename) const;
+            void load(const std::string &filename);
         };
 
         class SequenceContainer : public Container {
@@ -27,6 +33,7 @@ namespace SaintCore {
             void checkIndex(size_t index) const;
 
             std::shared_ptr<Models::BaseModel> get(size_t index);
+            std::shared_ptr<Models::BaseModel> get(size_t index) const;
 
             void add(std::shared_ptr<Models::BaseModel> item) override;
 
@@ -40,6 +47,9 @@ namespace SaintCore {
             Tensor get_logits(const Tensor& input, const Tensor& output);
             void backward(const Tensor& output);
             void optimize(floatT alpha) override;
+
+            void save(const std::string &filename) const;
+            void load(const std::string &filename);
         private:
             std::vector<std::shared_ptr<Models::BaseModel>> items_;
             std::vector<Tensor> inputs;
