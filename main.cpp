@@ -33,6 +33,33 @@ struct MLPImpl : torch::nn::Module {
 };
 TORCH_MODULE(MLP);
 
+std::pair<torch::Tensor, torch::Tensor> vec2tens(std::vector<MNIST_Example> dataset) {
+    const size_t size = dataset.size();
+
+    // Опции для данных
+    torch::TensorOptions data_options = torch::TensorOptions().dtype(torch::kFloat32);
+    torch::TensorOptions label_options = torch::TensorOptions().dtype(torch::kInt64);
+
+    torch::Tensor data = torch::empty({(int64_t)size, 1, 28, 28}, data_options);
+    torch::Tensor labels = torch::empty({(int64_t)size}, label_options);
+    // Заполняем
+    for (size_t i = 0; i < size; ++i) {
+        // Преобразуем vector<double> в Tensor float и нормализуем
+        torch::Tensor sample = torch::from_blob(
+            dataset[i].pixels.data(),
+            {28*28},
+            torch::TensorOptions().dtype(torch::kFloat64)
+        ).to(torch::kFloat32).div_(255.0f);
+        // reshape к [1,28,28]
+        sample = sample.view({1, 28, 28});
+        // Копируем в train_data[i]
+        data[i].copy_(sample);
+        // Метка
+        labels[i] = dataset[i].label;
+    }
+    return {data, labels};
+}
+
 int main() {
     // 1. Загрузка наборов данных
     auto train_set = load_dataset("train-images.idx3-ubyte", "train-labels.idx1-ubyte");
@@ -44,55 +71,24 @@ int main() {
     }
 
     // 2. Конвертация std::vector<MNIST_Example> в torch::Tensor
-    const size_t train_size = train_set.size();
-    const size_t test_size  = test_set.size();
+    auto [train_data, train_labels] = vec2tens(train_set);
+    auto [test_data, test_labels] = vec2tens(test_set);
 
-    // Опции для данных
-    torch::TensorOptions data_options = torch::TensorOptions().dtype(torch::kFloat32);
+    const size_t train_size = train_data.size(0);
+    const size_t test_size = test_data.size(0);
+
     torch::TensorOptions label_options = torch::TensorOptions().dtype(torch::kInt64);
 
-    torch::Tensor train_data = torch::empty({(int64_t)train_size, 1, 28, 28}, data_options);
-    torch::Tensor train_labels = torch::empty({(int64_t)train_size}, label_options);
-    // Заполняем
-    for (size_t i = 0; i < train_size; ++i) {
-        // Преобразуем vector<double> в Tensor float и нормализуем
-        // Получим временный тензор [784]
-        torch::Tensor sample = torch::from_blob(
-            const_cast<double*>(train_set[i].pixels.data()),  // указатель на данные
-            {28*28},
-            torch::TensorOptions().dtype(torch::kFloat64)
-        ).to(torch::kFloat32).div_(255.0f);
-        // reshape к [1,28,28]
-        sample = sample.view({1, 28, 28});
-        // Копируем в train_data[i]
-        train_data[i].copy_(sample);
-        // Метка
-        train_labels[i] = train_set[i].label;
-    }
-    // Аналогично для test
-    torch::Tensor test_data = torch::empty({(int64_t)test_size, 1, 28, 28}, data_options);
-    torch::Tensor test_labels = torch::empty({(int64_t)test_size}, label_options);
-    for (size_t i = 0; i < test_size; ++i) {
-        torch::Tensor sample = torch::from_blob(
-            const_cast<double*>(test_set[i].pixels.data()),
-            {28*28},
-            torch::TensorOptions().dtype(torch::kFloat64)
-        ).to(torch::kFloat32).div_(255.0f);
-        sample = sample.view({1, 28, 28});
-        test_data[i].copy_(sample);
-        test_labels[i] = test_set[i].label;
-    }
-
-    // 3. Создать модель и оптимизатор
-    MLP model;
-    torch::optim::SGD optimizer(model->parameters(), /*lr=*/0.01);
-
-    // 4. Гиперпараметры
-    const size_t num_epochs = 3;      // для примера 3 эпохи
+    // 3. Гиперпараметры
+    const size_t num_epochs = 3;
     const size_t batch_size = 64;
     const size_t num_batches = (train_size + batch_size - 1) / batch_size;
 
-    // По желанию: можно подготовить вектор индексов для shuffle
+    // 4. Создать модель и оптимизатор
+    MLP model;
+    torch::optim::SGD optimizer(model->parameters(),0.01); // lr = 0.01
+
+    // 5. Обучение модели
     std::vector<size_t> indices(train_size);
     std::iota(indices.begin(), indices.end(), 0);
     std::mt19937_64 rnd_engine(std::chrono::high_resolution_clock::now().time_since_epoch().count());
@@ -146,7 +142,7 @@ int main() {
         std::cout << "Epoch [" << epoch << "/" << num_epochs << "], "
                   << "Train Loss: " << avg_loss << ", Train Acc: " << accuracy << "%\n";
 
-        // 5. Оценка на тесте
+        // 5.5. Оценка на тесте
         model->eval();
         torch::NoGradGuard no_grad;
         double test_loss = 0.0;
@@ -191,14 +187,13 @@ int main() {
     torch::save(model, model_path);
     std::cout << "Model saved to " << model_path << "\n";
 
-    // // Пример доступа к данным
-    // if (!train_set.empty()) {
-    //     std::cout << "\n2000`s training example:" << std::endl;
-    //     std::cout << "Label: " << train_set[2000].label << std::endl;
-    //
-    //     visualize(train_set[2000].pixels, "../visualized_data/output0.bmp");
-    //     std::cout << std::endl;
-    // }
+    // Пример доступа к данным
+    if (!train_set.empty()) {
+        std::cout << "\nSave example in bmp with label: " << train_set[0].label << std::endl;
+
+        visualize(train_set[0].pixels, "../visualized_data/output0.bmp");
+        std::cout << std::endl;
+    }
 
 
 
