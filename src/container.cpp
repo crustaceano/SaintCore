@@ -43,13 +43,21 @@ void SaintCore::Containers::SequenceContainer::clear() {
 }
 
 
-void SaintCore::Containers::SequenceContainer::forward(const Tensor &input, const Tensor &ouput) {
+SaintCore::floatT SaintCore::Containers::SequenceContainer::forward(const Tensor &input, const Tensor &ouput) {
     inputs.clear();
     inputs.push_back(input);
     for (int i = 0; i + 1 < items_.size(); i++) {
         inputs.push_back(items_[i].get()->forward({inputs.back()}));
     }
-    // inputs.push_back(items_.back().get()->forward({inputs.back(), ouput}));
+
+    Tensor ans = items_.back().get()->forward({inputs.back(), ouput});
+    return ans.at(0, 0);
+}
+
+SaintCore::Tensor SaintCore::Containers::SequenceContainer::get_logits(const SaintCore::Tensor& input, const SaintCore::Tensor& output) {
+    inputs.clear();
+    this->forward(input, output);
+    return this->inputs.back();
 }
 
 

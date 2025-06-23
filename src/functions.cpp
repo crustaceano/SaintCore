@@ -67,3 +67,18 @@ SaintCore::Tensor SaintCore::Functions::one_hot(const Tensor &input, int num_cla
     }
     return output;
 }
+
+SaintCore::Tensor SaintCore::Functions::argmax(const SaintCore::Tensor& input) {
+    // input - (batch_size, num_classes)
+    SaintCore::Tensor result(1, input.get_rows());
+    for(int i = 0;i < input.get_rows();i++) {
+        int Max_ind = 0;
+        for(int j = 1;j < input.get_cols();j++) {
+            if(input[i][j] > input[i][Max_ind]) {
+                Max_ind = j;
+            }
+        }
+        result[0][i] = Max_ind;
+    }
+    return result;
+}

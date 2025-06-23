@@ -20,9 +20,17 @@ const SaintCore::floatT SaintCore::Tensor::eps = 1e-6;
 
 SaintCore::Tensor::Tensor(int rows, int cols) : cols(cols), rows(rows) {
 	data.assign(rows, std::vector<floatT>(cols, 0));
+	floatT sum = 0;
+	for (int i = 0; i < rows; i++)
+		for (int j = 0; j < cols; j++) {
+			data[i][j] = randomFloat();
+			sum += data[i][j] * data[i][j];
+		}
+	sum = std::sqrt(sum);
 	for (int i = 0; i < rows; i++)
 		for (int j = 0; j < cols; j++)
-			data[i][j] = randomFloat();
+			data[i][j] /= sum;
+
 }
 
 
@@ -38,6 +46,18 @@ SaintCore::Tensor::Tensor(std::vector<std::vector<floatT>> const& vec) {
 		if (vec[0].size() != vec[i].size())
 			throw BaseException("Different row size in matrix");
 	}
+}
+
+
+SaintCore::Tensor::Tensor(std::vector<floatT> const &vec) {
+	if (vec.size() == 0) {
+		rows = 0;
+		cols = 0;
+		return;
+	}
+	rows = 1;
+	cols = vec.size();
+	data.assign(1, std::vector<floatT>(vec));
 }
 
 

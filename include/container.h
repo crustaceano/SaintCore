@@ -36,7 +36,8 @@ namespace SaintCore {
             virtual bool is_empty() const override;
             virtual void clear() override;
 
-            void forward(const Tensor& input, const Tensor& output);
+            floatT forward(const Tensor& input, const Tensor& output);
+            Tensor get_logits(const Tensor& input, const Tensor& output);
             void backward(const Tensor& output);
             void optimize(floatT alpha) override;
         private:
