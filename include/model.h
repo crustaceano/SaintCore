@@ -2,175 +2,162 @@
 #define MODEL_H
 #include <functions.h>
 
-#include "include/types.h"
-#include "include/tensor.h"
+#include <include/types.h>
+#include <include/tensor.h>
 #include <string>
 #include <cmath>
 
-namespace SaintCore {
-    namespace Models {
-        class BaseModel {
-        public:
-            virtual ~BaseModel() = default;
+namespace SaintCore::Models {
+    class BaseModel {
+    public:
+        virtual ~BaseModel() = default;
 
-            virtual Tensor forward(const std::vector<Tensor> &input) = 0;
+        virtual Tensor forward(const std::vector<Tensor> &input) = 0;
 
-            // Переключение режима обучения/инференса
-            void train() { this->training_ = true; }
-            void eval() { this->training_ = false; }
+        virtual std::vector<Tensor *> get_parameters() const = 0;
 
-            virtual std::vector<Tensor *> get_parameters() const = 0;
+        virtual void update_parameters(std::vector<Tensor> &new_params) = 0;
 
-            virtual void update_parameters(std::vector<Tensor> &new_params) = 0;
+        virtual Tensor getGrad(const std::vector<Tensor> &input) const = 0;
 
-            virtual Tensor getGrad(const std::vector<Tensor> &input) const = 0;
+        virtual std::vector<Tensor> getTrainParams_grad(const Tensor &input) const = 0;
 
-            virtual std::vector<Tensor> getTrainParams_grad(const Tensor &input) const = 0;
+        virtual Tensor propagateGrad(const std::vector<Tensor> &input, Tensor &grad) = 0;
 
-            virtual Tensor propagateGrad(const std::vector<Tensor> &input, Tensor &grad) = 0;
+        virtual std::vector<Tensor> grad_from_trainable(const std::vector<Tensor> &input, Tensor &grad) = 0;
+    };
 
-            virtual std::vector<Tensor> grad_from_trainable(const std::vector<Tensor> &input, Tensor &grad) = 0;
+    class LinearModel : public BaseModel {
+    public:
+        explicit LinearModel(int in_channels, int out_channels)
+            : in_channels(in_channels),
+              out_channels(out_channels),
+              weights(in_channels, out_channels),
+              bias(1, out_channels) {
+        }
 
+        ~LinearModel() override;
 
-        protected:
-            bool training_ = true;
-        };
+        Tensor forward(const std::vector<Tensor> &input) override;
 
-        class LinearModel : public BaseModel {
-        public:
-            explicit LinearModel(int in_channels, int out_channels)
-                : in_channels(in_channels),
-                  out_channels(out_channels),
-                  weights(in_channels, out_channels),
-                  bias(1, out_channels) {
-            }
+        Tensor propagateGrad(const std::vector<Tensor> &input, Tensor &grad) override;
 
-            ~LinearModel() override;
+        std::vector<Tensor> grad_from_trainable(const std::vector<Tensor> &input, Tensor &grad) override;
 
-            Tensor forward(const std::vector<Tensor> &input) override;
+        std::vector<Tensor *> get_parameters() const override;
 
-            Tensor propagateGrad(const std::vector<Tensor> &input, Tensor &grad) override;
+        void update_parameters(std::vector<Tensor> &new_params) override;
 
-            std::vector<Tensor> grad_from_trainable(const std::vector<Tensor> &input, Tensor &grad) override;
+        Tensor getGrad(const std::vector<Tensor> &input) const override;
 
-            std::vector<Tensor *> get_parameters() const override;
+        std::vector<Tensor> getTrainParams_grad(const Tensor &input) const override;
 
-            void update_parameters(std::vector<Tensor> &new_params) override;
+        Tensor get_weights() const {
+            return weights;
+        }
 
-            Tensor getGrad(const std::vector<Tensor> &input) const override;
+        Tensor get_bias() const {
+            return bias;
+        }
 
-            std::vector<Tensor> getTrainParams_grad(const Tensor &input) const override;
+    private:
+        int in_channels;
+        int out_channels;
+        Tensor weights;
+        Tensor bias;
+    };
 
-            // virtual Tensor propagateGrad(Tensor &grad) override;
+    class ReLU : public BaseModel {
+    public:
+        explicit ReLU() = default;
 
-            Tensor get_weights() const {
-                return weights;
-            }
-
-            Tensor get_bias() const {
-                return bias;
-            }
-
-        private:
-            int in_channels;
-            int out_channels;
-            Tensor weights;
-            Tensor bias;
-        };
-
-        class ReLU : public BaseModel {
-        public:
-            explicit ReLU() = default;
-
-            Tensor forward(const std::vector<Tensor> &inputs) override {
-                const Tensor &input = inputs[0];
-                Tensor output(input.get_rows(), input.get_cols());
-                for (int i = 0; i < input.get_rows(); ++i) {
-                    for (int j = 0; j < input.get_cols(); ++j) {
-                        output.at(i, j) = std::max(0.0f, input.at(i, j));
-                    }
+        Tensor forward(const std::vector<Tensor> &inputs) override {
+            const Tensor &input = inputs[0];
+            Tensor output(input.get_rows(), input.get_cols());
+            for (int i = 0; i < input.get_rows(); ++i) {
+                for (int j = 0; j < input.get_cols(); ++j) {
+                    output.at(i, j) = std::max(0.0f, input.at(i, j));
                 }
-                return output;
             }
+            return output;
+        }
 
-            std::vector<Tensor *> get_parameters() const override {
-                return {};
-            }
+        std::vector<Tensor *> get_parameters() const override {
+            return {};
+        }
 
-            void update_parameters(std::vector<Tensor> &new_params) override {
-            }
+        void update_parameters(std::vector<Tensor> &new_params) override {
+        }
 
-            Tensor getGrad(const std::vector<Tensor> &inputs) const override {
-                Tensor input = inputs[0];
-                Tensor grad(input.get_rows(), input.get_cols());
-                for (int i = 0; i < input.get_rows(); ++i) {
-                    for (int j = 0; j < input.get_cols(); ++j) {
-                        grad.at(i, j) = input.at(i, j) > 0 ? 1.0f : 0.0f;
-                    }
+        Tensor getGrad(const std::vector<Tensor> &inputs) const override {
+            Tensor grad(inputs[0].get_rows(), inputs[0].get_cols());
+            for (int i = 0; i < inputs[0].get_rows(); ++i) {
+                for (int j = 0; j < inputs[0].get_cols(); ++j) {
+                    grad.at(i, j) = inputs[0].at(i, j) > 0 ? 1.0f : 0.0f;
                 }
-                return grad;
             }
+            return grad;
+        }
 
-            Tensor propagateGrad(const std::vector<Tensor> &input, Tensor &grad) override {
-                Tensor cur_grads = getGrad(input); // (batch_size, in_channels)
-                return grad % cur_grads;
+        Tensor propagateGrad(const std::vector<Tensor> &input, Tensor &grad) override {
+            Tensor cur_grads = getGrad(input); // (batch_size, in_channels)
+            return grad % cur_grads;
+        }
+
+        std::vector<Tensor> grad_from_trainable(const std::vector<Tensor> &input, Tensor &grad) override {
+            return {};
+        }
+
+        std::vector<Tensor> getTrainParams_grad(const Tensor &input) const override {
+            return {};
+        }
+    };
+
+    class CrossEntropyLoss : public BaseModel {
+    public:
+        CrossEntropyLoss() = default;
+
+        Tensor forward(const std::vector<Tensor> &inputs) override {
+            Tensor input = inputs[0], targets = inputs[1];
+            Tensor softmax_out = Functions::softmax(input);
+
+            int batch_size = softmax_out.get_rows();
+            float loss = 0.0f;
+            for (int i = 0; i < batch_size; ++i) {
+                int target_class = static_cast<int>(targets.at(0, i));
+                float log_prob = -std::log(softmax_out.at(i, target_class));
+                loss += log_prob;
             }
+            return Tensor({std::vector<floatT>{loss / batch_size}});
+        }
 
-            std::vector<Tensor> grad_from_trainable(const std::vector<Tensor> &input, Tensor &grad) override {
-                return {};
-            }
+        // ∂L/∂z = softmax(z) - one_hot(y)
+        Tensor getGrad(const std::vector<Tensor> &inputs) const override {
+            Tensor input = inputs[0], targets = inputs[1];
+            Tensor softmax_out = Functions::softmax(input);
+            return softmax_out - Functions::one_hot(targets, input.get_cols());
+        }
 
-            [[nodiscard]] std::vector<Tensor> getTrainParams_grad(const Tensor &input) const override {
-                return {};
-            }
-        };
+        Tensor propagateGrad(const std::vector<Tensor> &input, Tensor &grad) override {
+            Tensor cur_grads = getGrad(input); // (batch_size, in_channels)
+            return grad * cur_grads;
+        }
 
-        class CrossEntropyLoss : public BaseModel {
-        public:
-            CrossEntropyLoss() = default;
+        std::vector<Tensor> grad_from_trainable(const std::vector<Tensor> &input, Tensor &grad) override {
+            return {};
+        }
 
-            Tensor forward(const std::vector<Tensor> &inputs) override {
-                Tensor input = inputs[0], targets = inputs[1];
-                Tensor softmax_out = Functions::softmax(input);
+        std::vector<Tensor *> get_parameters() const override {
+            return {};
+        }
 
-                int batch_size = softmax_out.get_rows();
-                float loss = 0.0f;
-                for (int i = 0; i < batch_size; ++i) {
-                    int target_class = static_cast<int>(targets.at(0, i));
-                    float log_prob = -std::log(softmax_out.at(i, target_class));
-                    loss += log_prob;
-                }
-                return Tensor({std::vector<floatT>{loss / batch_size}});
-            }
+        void update_parameters(std::vector<Tensor> &new_params) override {
+        }
 
-            // ∂L/∂z = softmax(z) - one_hot(y)
-            Tensor getGrad(const std::vector<Tensor> &inputs) const override {
-                Tensor input = inputs[0], targets = inputs[1];
-                Tensor softmax_out = Functions::softmax(input);
-                return softmax_out - Functions::one_hot(targets, input.get_cols());
-            }
-
-            Tensor propagateGrad(const std::vector<Tensor> &input, Tensor &grad) override {
-                Tensor cur_grads = getGrad(input); // (batch_size, in_channels)
-                return grad * cur_grads;
-            }
-
-            std::vector<Tensor> grad_from_trainable(const std::vector<Tensor> &input, Tensor &grad) override {
-                return {};
-            }
-
-            std::vector<Tensor *> get_parameters() const override {
-                return {};
-            }
-
-            void update_parameters(std::vector<Tensor> &new_params) override {
-            }
-
-            std::vector<Tensor> getTrainParams_grad(const Tensor &input) const override {
-                return {};
-            }
-        };
-    }
+        std::vector<Tensor> getTrainParams_grad(const Tensor &input) const override {
+            return {};
+        }
+    };
 }
 
 #endif //MODEL_H
